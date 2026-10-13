@@ -65,6 +65,10 @@ dialog{background:var(--card);color:var(--tx);border:1px solid var(--line);borde
 dialog::backdrop{background:#0009}
 dialog form{display:grid;gap:12px}
 @media(max-width:760px){aside{position:fixed;z-index:20;left:0;margin-left:0}aside.closed{margin-left:-250px}}
+.fi{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx);width:100%}
+.del{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--bad)}
+.shop{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.shop:last-child{border:0}.shop small{color:var(--mu);display:block;margin-top:2px}
 </style>
 </head>
 <body>
@@ -87,7 +91,6 @@ dialog form{display:grid;gap:12px}
     <div class="brand">✂ m-barberPro</div>
     <button class="nav on" data-p="dashboard">📊 Dashboard</button>
     <button class="nav" data-p="barbershops">💈 Barbershops</button>
-    <button class="nav" data-p="bots">🤖 Bot Control</button>
     <button class="nav" data-p="payments">💳 To'lovlar</button>
     <button class="nav" data-p="analytics">📈 Analitika</button>
     <button class="nav" data-p="settings">⚙️ Admin settings</button>
@@ -113,7 +116,6 @@ dialog form{display:grid;gap:12px}
       </div>
       <div class="card"><b>Tezkor amallar</b><div class="btns" style="margin-top:12px">
         <button data-go="barbershops">➕ Sartaroshxona qo'shish</button>
-        <button data-go="bots">🤖 Botlarni boshqarish</button>
         <button data-go="analytics">📈 Hisobotlar</button>
         <button data-go="settings">⚙️ Sozlamalar</button></div></div>
       <div class="phones">
@@ -129,8 +131,7 @@ dialog form{display:grid;gap:12px}
       <div class="card" id="shops"><div class="empty">Hali sartaroshxona qo'shilmagan</div></div>
     </section>
 
-    <section id="bots" class="hide"><div class="card empty">Bot Control — keyingi bosqichda tayyorlanadi</div></section>
-    <section id="payments" class="hide">
+        <section id="payments" class="hide">
       <div class="grid">
         <div class="card"><small>Bugungi to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
         <div class="card"><small>Oylik to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
@@ -151,11 +152,17 @@ dialog form{display:grid;gap:12px}
   </main>
 </div>
 
-<dialog id="dlg"><form method="dialog" id="df">
+<dialog id="dlg"><form id="df" autocomplete="off">
   <b>Yangi sartaroshxona</b>
-  <input class="set-i" id="sn" placeholder="Nomi" required style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx)">
-  <input id="sa" placeholder="Manzil (qishloq/tuman)" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx)">
-  <div class="btns"><button class="gold" value="ok">Qo'shish</button><button value="cancel" formnovalidate>Bekor</button></div>
+  <input class="fi" id="f_token" placeholder="Bot token (BotFather'dan)" required>
+  <input class="fi" id="f_login" placeholder="Bot uchun login" required>
+  <input class="fi" id="f_pass" type="password" placeholder="Bot uchun parol (kamida 6 belgi)" minlength="6" required>
+  <input class="fi" id="f_barber" placeholder="Sartarosh ism familiyasi" required>
+  <input class="fi" id="f_name" placeholder="Sartaroshxona nomi" required>
+  <input class="fi" id="f_phone" type="tel" placeholder="Sartarosh telefon raqami" required>
+  <input class="fi" id="f_addr" placeholder="Sartaroshxona manzili" required>
+  <div class="err" id="f_err"></div>
+  <div class="btns"><button class="gold" id="f_ok" type="submit">Yaratish</button><button type="button" id="f_cancel">Bekor qilish</button></div>
 </form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -174,7 +181,7 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
 $('#logout').onclick=async()=>{await sb.auth.signOut();$('#p').value='';show(false)};
 $('#bg').onclick=()=>$('#side').classList.toggle('closed');
 if(innerWidth<=760)$('#side').classList.add('closed');
-const names={dashboard:'Dashboard',barbershops:'Barbershops',bots:'Bot Control',payments:"To'lovlar",analytics:'Analitika',settings:'Admin settings'};
+const names={dashboard:'Dashboard',barbershops:'Barbershops',payments:"To'lovlar",analytics:'Analitika',settings:'Admin settings'};
 function go(p){$$('main section').forEach(s=>s.classList.toggle('hide',s.id!==p));
   $$('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===p));$('#title').textContent=names[p];
   if(innerWidth<=760)$('#side').classList.add('closed')}
@@ -186,14 +193,26 @@ $$('.compose').forEach((c,i)=>{const send=()=>{const inp=c.querySelector('input'
 $('#sf').onsubmit=async e=>{e.preventDefault();const {error}=await sb.auth.updateUser({email:em($('#nu').value),password:$('#np').value});
   $('#sok').textContent=error?'Xatolik: '+error.message:'Saqlandi ✓';if(!error)e.target.reset()};
 let shops=[];
-async function loadShops(){const {data}=await sb.from('barbershops').select('*').order('created_at',{ascending:false});shops=data||[];render()}
+async function api(path,body){const {data}=await sb.auth.getSession();
+  const r=await fetch('/api/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Xatolik');return j}
+async function loadShops(){const {data}=await sb.from('barbershops').select('id,name,address,phone,barber_name,login,bot_username').order('created_at',{ascending:false});shops=data||[];render()}
 function render(){const box=$('#shops');box.innerHTML='';
   if(!shops.length){box.innerHTML='<div class="empty">Hali sartaroshxona qo\'shilmagan</div>';return}
-  shops.forEach(x=>{const r=document.createElement('div');r.className='row';const a=document.createElement('b');a.textContent=x.name;const c=document.createElement('span');c.textContent=x.address||'';r.append(a,c);box.append(r)})}
-$('#addShop').onclick=()=>$('#dlg').showModal();
-$('#df').addEventListener('submit',async e=>{if(e.submitter&&e.submitter.value==='ok'&&$('#sn').value.trim()){
-  const {error}=await sb.from('barbershops').insert({name:$('#sn').value.trim(),address:$('#sa').value.trim()});
-  if(error)alert(error.message);else{e.target.reset();loadShops()}}});
+  shops.forEach(x=>{const r=document.createElement('div');r.className='shop';
+    const l=document.createElement('div');const b=document.createElement('b');b.textContent='💈 '+x.name;
+    const m=document.createElement('small');m.textContent=[x.barber_name,x.phone,x.address,x.bot_username?'@'+x.bot_username:''].filter(Boolean).join(' · ');
+    l.append(b,m);const d=document.createElement('button');d.className='del';d.textContent='🗑 O\'chirish';
+    d.onclick=async()=>{if(!confirm(x.name+' o\'chirilsinmi? Bot ham uzib qo\'yiladi.'))return;
+      try{await api('delete-barbershop',{id:x.id});loadShops()}catch(e){alert(e.message)}};
+    r.append(l,d);box.append(r)})}
+$('#addShop').onclick=()=>{$('#f_err').textContent='';$('#dlg').showModal()};
+$('#f_cancel').onclick=()=>{$('#dlg').close();$('#df').reset()};
+$('#df').onsubmit=async e=>{e.preventDefault();const ok=$('#f_ok');ok.disabled=true;$('#f_err').textContent='';
+  try{await api('create-barbershop',{token:$('#f_token').value.trim(),login:$('#f_login').value.trim().toLowerCase(),password:$('#f_pass').value,
+    barber:$('#f_barber').value.trim(),name:$('#f_name').value.trim(),phone:$('#f_phone').value.trim(),address:$('#f_addr').value.trim()});
+    $('#dlg').close();e.target.reset();loadShops()}catch(x){$('#f_err').textContent=x.message}
+  ok.disabled=false};
 </script>
 </body>
 </html>

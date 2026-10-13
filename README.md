@@ -9,3 +9,8 @@ Statik sayt (index.html) + Supabase. Vercel'da build kerak emas.
 
 ## Deploy
 GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
+
+## Yangilanish (sartaroshxona qo'shish)
+1. SQL Editor: `supabase/02_barbershops_update.sql` ni ishga tushiring.
+2. Vercel > Settings > Environment Variables: `SUPABASE_URL` (loyiha URL'i) va `SUPABASE_SERVICE_ROLE_KEY` (Supabase > Settings > API > service_role). Bu kalit FAQAT Vercel'da turadi, hech kimga yubormang.
+3. Redeploy qiling.
