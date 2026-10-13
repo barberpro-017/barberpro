@@ -14,3 +14,7 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 1. SQL Editor: `supabase/02_barbershops_update.sql` ni ishga tushiring.
 2. Vercel > Settings > Environment Variables: `SUPABASE_URL` (loyiha URL'i) va `SUPABASE_SERVICE_ROLE_KEY` (Supabase > Settings > API > service_role). Bu kalit FAQAT Vercel'da turadi, hech kimga yubormang.
 3. Redeploy qiling.
+
+## Sartarosh mini app
+- `/barber/` — sartarosh paneli (login: admin saytda yaratilgan bot logini/paroli).
+- SQL Editor: `supabase/03_barber_app.sql` ni ishga tushiring.

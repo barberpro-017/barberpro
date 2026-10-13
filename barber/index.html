@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>m-barberPro</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0c0d12;--c:#161824;--l:#262a3a;--t:#f4f4f8;--m:#8d93a8;--g:#e0b567;--a:#7c6cff;--ok:#38d39f;--bad:#ff6b6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:var(--bg);color:var(--t);min-height:100vh}
+button,input,select{font:inherit;color:inherit}.hide{display:none!important}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 20% 0,#2a2350,transparent 55%),radial-gradient(circle at 90% 100%,#3a2d12,transparent 50%),var(--bg)}
+#login h1{font-size:34px;margin:12px 0 4px}#login h1 b{color:var(--g)}.sub{color:var(--m);margin-bottom:22px}
+.box{width:100%;max-width:400px;background:#12141e;border:1px solid var(--l);border-radius:20px;padding:20px;display:grid;gap:12px}
+.fi{width:100%;background:var(--bg);border:1px solid var(--l);border-radius:12px;padding:14px;outline:0}.fi:focus{border-color:var(--g)}
+.go{background:linear-gradient(135deg,var(--g),#f0cf8e);color:#1a1405;border:0;border-radius:12px;padding:14px;font-weight:700;cursor:pointer}
+.err{color:var(--bad);font-size:14px;text-align:center;min-height:16px}
+#app{display:flex;min-height:100vh}
+aside{width:230px;background:var(--c);border-right:1px solid var(--l);padding:16px 10px;position:sticky;top:0;height:100vh;transition:margin .25s;flex-shrink:0}
+aside.closed{margin-left:-230px}.brand{color:var(--g);font-weight:800;padding:6px 12px 14px;font-size:18px}
+.nav{display:flex;gap:10px;width:100%;padding:12px;border:0;background:none;border-radius:12px;color:var(--m);cursor:pointer;text-align:left}
+.nav.on{background:linear-gradient(135deg,#2b2750,#1d1f33);color:var(--g)}
+main{flex:1;min-width:0}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--l);position:sticky;top:0;background:var(--bg);z-index:5}
+.burger{background:var(--c);border:1px solid var(--l);border-radius:12px;width:42px;height:42px;cursor:pointer;display:grid;place-content:center;gap:5px}
+.burger i{display:block;width:20px;height:2px;background:var(--t);border-radius:2px}
+header h2{flex:1;font-size:18px}.ex{background:none;border:1px solid var(--l);border-radius:10px;padding:8px 12px;color:var(--m);cursor:pointer}
+#view{padding:16px;display:grid;gap:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.card{background:var(--c);border:1px solid var(--l);border-radius:18px;padding:16px}
+.w small{color:var(--m)}.w .v{font-size:22px;font-weight:700;margin-top:6px}
+.w:nth-child(1){background:linear-gradient(135deg,#2b2750,var(--c))}.w:nth-child(3){background:linear-gradient(135deg,#17352d,var(--c))}.w:nth-child(4){background:linear-gradient(135deg,#3a1e24,var(--c))}.w:nth-child(5){background:linear-gradient(135deg,#3a2d12,var(--c))}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.gd{color:var(--g)}.mu{color:var(--m);font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}.b{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:10px 14px;cursor:pointer}.b:hover{border-color:var(--g)}
+.b.g{background:var(--g);color:#1a1405;border:0;font-weight:700}.b.s{padding:6px 10px;font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--l);flex-wrap:wrap}.row:last-child{border:0}
+.tag{font-size:12px;padding:3px 9px;border-radius:20px;background:var(--l)}
+.bars{display:flex;align-items:flex-end;gap:8px;height:140px}.bars div{flex:1;text-align:center;font-size:11px;color:var(--m);display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bars i{display:block;background:linear-gradient(var(--a),var(--g));border-radius:6px 6px 0 0;min-height:3px}
+dialog{background:var(--c);color:var(--t);border:1px solid var(--l);border-radius:18px;padding:20px;width:min(400px,92vw)}dialog::backdrop{background:#000a}dialog form{display:grid;gap:10px}
+details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}details p{color:var(--m);margin-top:8px;font-size:14px}
+@media(max-width:760px){aside{position:fixed;z-index:20}aside.closed{margin-left:-240px}}
+</style></head><body>
+<div id="login">
+ <div style="font-size:44px">💈</div><h1><b>Xush</b> kelibsiz!</h1><div class="sub">m-barberPro · Sartarosh paneli</div>
+ <form class="box" id="lf"><input class="fi" id="u" placeholder="Login" autocomplete="username"><input class="fi" id="p" type="password" placeholder="Parol" autocomplete="current-password"><div class="err" id="err"></div><button class="go">Kirish →</button></form>
+</div>
+<div id="app" class="hide">
+ <aside id="side"><div class="brand">✂ m-barberPro</div><div id="nav"></div></aside>
+ <main><header><button class="burger" id="bg" aria-label="Menyu"><i></i><i></i><i></i></button><h2 id="title"></h2><button class="ex" id="out">Chiqish</button></header><div id="view"></div></main>
+</div>
+<dialog id="dlg"><form id="df"></form></dialog>
+<script>
+const $=s=>document.querySelector(s);
+const tg=window.Telegram&&Telegram.WebApp;if(tg){tg.ready();tg.expand()}
+const ls={g:k=>{try{return localStorage.getItem(k)}catch(e){return null}},s:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},d:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
+const day=d=>new Date(d).toDateString(),today=d=>day(d)===day(new Date());
+const hm=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
+let token=ls.g('bt'),shop={},D={services:[],queue:[],transactions:[]},page='dash';
+const PAGES=[['dash','📊','Dashboard'],['queue','🕒','Navbatlar'],['services','✂️','Xizmatlar'],['stats','📈','Analitika'],['cash','💰','Kirim va Chiqim'],['sub','⭐','Obuna'],['help','❓','Yordam']];
+async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,token,...o})});
+ const j=await r.json().catch(()=>({}));if(r.status===401&&action!=='login'){out();throw new Error('Qayta kiring')}if(!r.ok)throw new Error(j.error||'Xatolik');return j}
+async function load(){const [s,a,b,c]=await Promise.all([call('shop'),...['services','queue','transactions'].map(t=>call('list',{table:t}))]);
+ shop=s.shop||{};D.services=a.rows;D.queue=b.rows;D.transactions=c.rows;draw()}
+function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
+function out(){token=null;ls.d('bt');show(false)}
+async function start(){show(true);try{await load()}catch(e){}}
+if(token)start();
+$('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
+ try{const j=await call('login',{login:$('#u').value,password:$('#p').value});token=j.token;ls.s('bt',token);$('#p').value='';start()}catch(x){$('#err').textContent=x.message}};
+$('#out').onclick=out;$('#bg').onclick=()=>$('#side').classList.toggle('closed');
+if(innerWidth<=760)$('#side').classList.add('closed');
+$('#nav').innerHTML=PAGES.map(p=>`<button class="nav" data-p="${p[0]}">${p[1]} ${p[2]}</button>`).join('');
+$('#nav').onclick=e=>{const b=e.target.closest('.nav');if(!b)return;page=b.dataset.p;draw();if(innerWidth<=760)$('#side').classList.add('closed')};
+function openForm(title,fields,cb){const f=$('#df');
+ f.innerHTML=`<b>${esc(title)}</b>`+fields.map(x=>x.opts?`<select class="fi" name="${x.k}" required>${x.opts.map(o=>`<option>${esc(o)}</option>`).join('')}</select>`:`<input class="fi" name="${x.k}" type="${x.t||'text'}" placeholder="${esc(x.l)}" ${x.r===false?'':'required'}>`).join('')+'<div class="err" id="fe"></div><div class="btns"><button class="b g">Saqlash</button><button type="button" class="b" id="fc">Bekor</button></div>';
+ $('#fc').onclick=()=>$('#dlg').close();
+ f.onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(f));try{await cb(v);$('#dlg').close();await load()}catch(x){$('#fe').textContent=x.message}};
+ $('#dlg').showModal()}
+const add=(table,row)=>call('add',{table,row});
+const A={
+ queue(){if(!D.services.length)return alert("Avval 'Xizmatlar' bo'limida xizmat qo'shing");
+  openForm('Yangi navbat',[{k:'client_name',l:'Mijoz ismi'},{k:'phone',l:'Telefon',t:'tel',r:false},{k:'service',opts:D.services.map(s=>s.name)},{k:'time',l:'Vaqt',t:'time'}],v=>{
+   const s=D.services.find(x=>x.name===v.service),d=new Date(),[h,m]=v.time.split(':');d.setHours(+h,+m,0,0);
+   return add('queue',{client_name:v.client_name,phone:v.phone,service_name:s.name,price:s.price,at:d.toISOString(),status:'kutilmoqda'})})},
+ service(){openForm('Yangi xizmat',[{k:'name',l:'Xizmat nomi'},{k:'price',l:"Narxi (so'm)",t:'number'},{k:'duration_min',l:'Davomiyligi (daqiqa)',t:'number'}],v=>add('services',{name:v.name,price:+v.price,duration_min:+v.duration_min}))},
+ tx(type){openForm(type==='kirim'?'Yangi kirim':'Yangi chiqim',[{k:'amount',l:"Summa (so'm)",t:'number'},{k:'note',l:'Izoh',r:false}],v=>add('transactions',{type,amount:+v.amount,note:v.note}))},
+ async st(id,st){const q=D.queue.find(x=>x.id===id);await call('update',{table:'queue',id,row:{status:st}});
+  if(st==='tugadi'&&q)await add('transactions',{type:'kirim',amount:q.price,note:'Navbat: '+q.client_name});await load()},
+ async del(table,id){if(confirm("O'chirilsinmi?")){await call('delete',{table,id});await load()}}
+};
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const [a,x,y]=b.dataset.a.split('|');try{await A[a](x,y)}catch(err){alert(err.message)}});
+const sum=(t,f)=>D.transactions.filter(x=>x.type===t&&f(x.created_at)).reduce((s,x)=>s+Number(x.amount),0);
+const W=(l,v,c='')=>`<div class="card w"><small>${l}</small><div class="v ${c}">${v}</div></div>`;
+const V={
+ dash(){const tq=D.queue.filter(q=>today(q.at)),wait=tq.filter(q=>q.status==='kutilmoqda').sort((a,b)=>new Date(a.at)-new Date(b.at)),inc=sum('kirim',today),ex=sum('chiqim',today);
+  return `<div class="grid">${W('Navbatdagilar',wait.length)}${W('Bugun tugatilgan',tq.filter(q=>q.status==='tugadi').length)}${W('Kunlik tushum',money(inc),'ok')}${W('Kunlik chiqim',money(ex),'bad')}${W('Sof foyda',money(inc-ex),'gd')}${W('Xizmatlar soni',D.services.length)}</div>
+  <div class="card"><small class="mu">Keyingi mijoz</small><div style="margin-top:6px;font-size:18px">${wait[0]?`<b>${esc(wait[0].client_name)}</b> · ${hm(wait[0].at)} · ${esc(wait[0].service_name)}`:"Hozircha navbat yo'q"}</div></div>
+  <div class="card"><b>Tezkor amallar</b><div class="btns" style="margin-top:10px"><button class="b g" data-a="queue">➕ Navbat</button><button class="b" data-a="tx|kirim">💵 Kirim</button><button class="b" data-a="tx|chiqim">🧾 Chiqim</button><button class="b" data-a="service">✂️ Xizmat</button></div></div>`},
+ queue(){const L=D.queue.filter(q=>today(q.at)).sort((a,b)=>new Date(a.at)-new Date(b.at)),C={kutilmoqda:'⏳',jarayonda:'✂️',tugadi:'✅',bekor:'❌'};
+  return `<div><button class="b g" data-a="queue">➕ Yangi navbat</button></div><div class="card">${L.length?L.map(q=>`<div class="row"><div><b>${C[q.status]||''} ${esc(q.client_name)}</b><div class="mu">${hm(q.at)} · ${esc(q.service_name)} · ${money(q.price)}${q.phone?' · '+esc(q.phone):''}</div></div><div class="btns">${q.status==='kutilmoqda'?`<button class="b s" data-a="st|${q.id}|jarayonda">Boshlash</button>`:''}${q.status==='kutilmoqda'||q.status==='jarayonda'?`<button class="b s" data-a="st|${q.id}|tugadi">Tugadi</button><button class="b s" data-a="st|${q.id}|bekor">Bekor</button>`:`<button class="b s" data-a="del|queue|${q.id}">🗑</button>`}</div></div>`).join(''):'<div class="mu">Bugun navbat yo\'q</div>'}</div>`},
+ services(){return `<div><button class="b g" data-a="service">➕ Xizmat qo'shish</button></div><div class="card">${D.services.length?D.services.map(s=>`<div class="row"><div><b>${esc(s.name)}</b><div class="mu">${s.duration_min} daqiqa</div></div><div class="btns"><span class="gd">${money(s.price)}</span><button class="b s" data-a="del|services|${s.id}">🗑</button></div></div>`).join(''):'<div class="mu">Hali xizmat yo\'q</div>'}</div>`},
+ stats(){const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d}),vals=days.map(d=>sum('kirim',x=>day(x)===day(d))),mx=Math.max(...vals,1),
+  done=D.queue.filter(q=>q.status==='tugadi'),cnt={};done.forEach(q=>cnt[q.service_name]=(cnt[q.service_name]||0)+1);const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  return `<div class="card"><b>So'nggi 7 kun tushumi</b><div class="bars" style="margin-top:14px">${vals.map((v,i)=>`<div><i style="height:${v/mx*100}%"></i>${days[i].getDate()}</div>`).join('')}</div></div>
+  <div class="grid">${W('Jami xizmat ko\'rsatilgan',done.length)}${W('Haftalik tushum',money(vals.reduce((a,b)=>a+b,0)),'ok')}</div>
+  <div class="card"><b>Eng ko'p so'ralgan xizmatlar</b>${top.length?top.map(t=>`<div class="row"><span>${esc(t[0])}</span><span class="gd">${t[1]} ta</span></div>`).join(''):'<div class="mu" style="margin-top:8px">Ma\'lumot yo\'q</div>'}</div>`},
+ cash(){const mo=d=>new Date(d).getMonth()===new Date().getMonth();
+  return `<div class="grid">${W('Bugungi kirim',money(sum('kirim',today)),'ok')}${W('Bugungi chiqim',money(sum('chiqim',today)),'bad')}${W('Oylik kirim',money(sum('kirim',mo)),'ok')}${W('Oylik chiqim',money(sum('chiqim',mo)),'bad')}</div>
+  <div class="btns"><button class="b g" data-a="tx|kirim">💵 Kirim</button><button class="b" data-a="tx|chiqim">🧾 Chiqim</button></div>
+  <div class="card">${D.transactions.length?D.transactions.slice(0,60).map(x=>`<div class="row"><div><b class="${x.type==='kirim'?'ok':'bad'}">${x.type==='kirim'?'+':'−'} ${money(x.amount)}</b><div class="mu">${esc(x.note||'')} · ${new Date(x.created_at).toLocaleDateString('uz')}</div></div><button class="b s" data-a="del|transactions|${x.id}">🗑</button></div>`).join(''):'<div class="mu">Yozuvlar yo\'q</div>'}</div>`},
+ sub(){const left=shop.sub_until?Math.ceil((new Date(shop.sub_until)-new Date())/864e5):0;
+  return `<div class="card w"><small>Obuna holati</small><div class="v ${left>0?'ok':'bad'}">${left>0?'Faol':'Tugagan'}</div><div class="mu" style="margin-top:8px">${shop.sub_until?`Amal qilish muddati: ${new Date(shop.sub_until).toLocaleDateString('uz')} (${Math.max(left,0)} kun qoldi)`:'Muddat belgilanmagan'}</div></div><div class="card mu">Obunani uzaytirish uchun admin bilan bog'laning. Onlayn to'lov tez orada qo'shiladi.</div>`},
+ help(){return `<div class="card"><b>Tez-tez so'raladigan savollar</b>
+  <details><summary>Navbatni qanday qo'shaman?</summary><p>Avval Xizmatlar bo'limida xizmat qo'shing, so'ng Navbatlar bo'limida "Yangi navbat" tugmasini bosing.</p></details>
+  <details><summary>Tushum qanday hisoblanadi?</summary><p>Navbat "Tugadi" deb belgilanganda xizmat narxi avtomatik kirimga qo'shiladi.</p></details>
+  <details><summary>Qo'shimcha chiqim yoki kirimni qanday yozaman?</summary><p>"Kirim va Chiqim" bo'limidan summani va izohni kiriting.</p></details>
+  <details><summary>Parolni unutdim</summary><p>Admin bilan bog'laning, u yangi parol beradi.</p></details></div><div class="card mu">Aloqa ma'lumotlari tez orada qo'shiladi.</div>`}
+};
+function draw(){document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===page));
+ $('#title').textContent=(shop.name?shop.name+' · ':'')+PAGES.find(p=>p[0]===page)[2];$('#view').innerHTML=V[page]()}
+</script></body></html>
