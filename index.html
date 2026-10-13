@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>m-barberPro Admin</title>
+<style>
+:root{--bg:#0b0c0e;--card:#14161a;--line:#262a31;--tx:#f2f2f2;--mu:#8a909b;--gold:#d9b06a;--ok:#4cc38a;--bad:#e5645a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f3f1ec;--card:#fff;--line:#e2ddd2;--tx:#17181a;--mu:#6b6f78}}
+*{box-sizing:border-box;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);min-height:100vh}
+button,input,textarea{font:inherit;color:inherit}
+.hide{display:none!important}
+/* login */
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 0,#1c1810,#0b0c0e 60%);color:#f2f2f2}
+#login h1{font-size:clamp(32px,6vw,46px);margin:14px 0 4px}
+#login h1 b{color:var(--gold)}
+.sub{color:#8a909b;margin-bottom:26px}
+.box{width:100%;max-width:440px;background:#111317;border:1px solid #262a31;border-radius:18px;padding:22px;display:grid;gap:14px}
+.inp{display:flex;align-items:center;gap:10px;background:#16181d;border:1px solid #2a2e36;border-radius:12px;padding:0 14px}
+.inp input{flex:1;background:none;border:0;outline:0;padding:16px 0;color:#f2f2f2}
+.inp:focus-within{border-color:var(--gold)}
+.eye{background:none;border:0;cursor:pointer;color:#8a909b}
+.gold{background:var(--gold);color:#17120a;border:0;border-radius:12px;padding:15px;font-weight:700;cursor:pointer}
+.err{color:var(--bad);font-size:14px;min-height:18px;text-align:center}
+.foot{margin-top:30px;font-size:11px;letter-spacing:.2em;color:#6b707a;text-align:center}
+/* app */
+#app{display:flex;min-height:100vh}
+aside{width:240px;background:var(--card);border-right:1px solid var(--line);padding:18px 12px;transition:margin .25s;position:sticky;top:0;height:100vh;flex-shrink:0}
+aside.closed{margin-left:-240px}
+.brand{font-weight:800;padding:6px 12px 18px;color:var(--gold);font-size:18px}
+.nav{display:flex;width:100%;gap:10px;align-items:center;background:none;border:0;padding:12px;border-radius:10px;cursor:pointer;color:var(--mu);text-align:left}
+.nav:hover{background:var(--bg)}.nav.on{background:var(--bg);color:var(--gold)}
+main{flex:1;min-width:0}
+header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.burger{background:none;border:1px solid var(--line);border-radius:10px;width:42px;height:42px;cursor:pointer;display:grid;place-content:center;gap:5px}
+.burger i{display:block;width:20px;height:2px;background:var(--tx);border-radius:2px}
+header h2{flex:1;font-size:20px}
+.out{background:none;border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;color:var(--mu)}
+section{padding:20px;display:grid;gap:18px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card small{color:var(--mu)}
+.card .v{font-size:28px;font-weight:700;margin-top:6px}
+.card .v em{font-style:normal;color:var(--gold)}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btns button,.btn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer}
+.btns button:hover{border-color:var(--gold)}
+.phones{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.phone{border:2px solid var(--line);border-radius:28px;padding:14px;background:var(--card);max-width:340px;width:100%;margin:auto}
+.phone h4{text-align:center;color:var(--gold);margin-bottom:10px;font-size:14px}
+.screen{background:var(--bg);border-radius:16px;min-height:120px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.msg{background:var(--gold);color:#17120a;padding:8px 11px;border-radius:12px 12px 2px 12px;align-self:flex-end;max-width:90%}
+.compose{display:flex;gap:8px;margin-top:10px}
+.compose input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:10px 14px;outline:0;min-width:0}
+.compose button{background:var(--gold);border:0;border-radius:50%;width:40px;color:#17120a;cursor:pointer;font-weight:700}
+.empty{text-align:center;color:var(--mu);padding:30px}
+.set{display:grid;gap:12px;max-width:420px}
+.set input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.ok{color:var(--ok);font-size:14px}
+dialog{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:16px;padding:22px;width:min(420px,92vw)}
+dialog::backdrop{background:#0009}
+dialog form{display:grid;gap:12px}
+@media(max-width:760px){aside{position:fixed;z-index:20;left:0;margin-left:0}aside.closed{margin-left:-250px}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <svg width="30" height="60" viewBox="0 0 30 60" fill="none"><rect x="6" y="6" width="18" height="40" rx="6" stroke="#d9b06a" stroke-width="3"/><path d="M8 16l14 8M8 28l14 8" stroke="#d9b06a" stroke-width="4"/><circle cx="15" cy="4" r="3" fill="#d9b06a"/><rect x="9" y="48" width="12" height="8" rx="2" fill="#d9b06a"/></svg>
+  <h1><b>Xush</b> kelibsiz!</h1>
+  <div class="sub">m-barberPro Admin</div>
+  <form class="box" id="lf" autocomplete="off">
+    <label class="inp">👤<input id="u" placeholder="Login" autocomplete="username"></label>
+    <label class="inp">🔒<input id="p" type="password" placeholder="Parol" autocomplete="current-password"><button type="button" class="eye" id="eye">👁</button></label>
+    <div class="err" id="err"></div>
+    <button class="gold" type="submit">Kirish →</button>
+  </form>
+  <div class="foot">BARCHA BARBERLAR UCHUN BIR PLATFORMA</div>
+</div>
+
+<div id="app" class="hide">
+  <aside id="side">
+    <div class="brand">✂ m-barberPro</div>
+    <button class="nav on" data-p="dashboard">📊 Dashboard</button>
+    <button class="nav" data-p="barbershops">💈 Barbershops</button>
+    <button class="nav" data-p="bots">🤖 Bot Control</button>
+    <button class="nav" data-p="payments">💳 To'lovlar</button>
+    <button class="nav" data-p="analytics">📈 Analitika</button>
+    <button class="nav" data-p="settings">⚙️ Admin settings</button>
+  </aside>
+  <main>
+    <header>
+      <button class="burger" id="bg" aria-label="Menyu"><i></i><i></i><i></i></button>
+      <h2 id="title">Dashboard</h2>
+      <button class="out" id="logout">Chiqish</button>
+    </header>
+
+    <section id="dashboard">
+      <div class="grid">
+        <div class="card"><small>Ochiq sartaroshxonalar</small><div class="v"><em>0</em> / 0</div></div>
+        <div class="card"><small>Yopiq sartaroshxonalar</small><div class="v">0</div></div>
+        <div class="card"><small>Bugungi navbatlar</small><div class="v">0</div></div>
+        <div class="card"><small>Daromad (oy)</small><div class="v">0 <em>so'm</em></div></div>
+        <div class="card"><small>O'rtacha reyting</small><div class="v">— <em>★</em></div></div>
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+        <div class="card"><b>Haftadagi eng faol sartaroshxonalar</b><div class="empty">Ma'lumot yo'q</div></div>
+        <div class="card"><b>Eng yuqori reytingli</b><div class="empty">Ma'lumot yo'q</div></div>
+      </div>
+      <div class="card"><b>Tezkor amallar</b><div class="btns" style="margin-top:12px">
+        <button data-go="barbershops">➕ Sartaroshxona qo'shish</button>
+        <button data-go="bots">🤖 Botlarni boshqarish</button>
+        <button data-go="analytics">📈 Hisobotlar</button>
+        <button data-go="settings">⚙️ Sozlamalar</button></div></div>
+      <div class="phones">
+        <div class="phone"><h4>📣 Sartaroshxona botiga xabar</h4><div class="screen" id="s1"></div>
+          <div class="compose"><input placeholder="Xabar yozing..."><button>➤</button></div></div>
+        <div class="phone"><h4>📣 Mijozlar botiga xabar</h4><div class="screen" id="s2"></div>
+          <div class="compose"><input placeholder="Xabar yozing..."><button>➤</button></div></div>
+      </div>
+    </section>
+
+    <section id="barbershops" class="hide">
+      <div><button class="gold" style="padding:13px 20px" id="addShop">➕ Sartaroshxona qo'shish</button></div>
+      <div class="card" id="shops"><div class="empty">Hali sartaroshxona qo'shilmagan</div></div>
+    </section>
+
+    <section id="bots" class="hide"><div class="card empty">Bot Control — keyingi bosqichda tayyorlanadi</div></section>
+    <section id="payments" class="hide">
+      <div class="grid">
+        <div class="card"><small>Bugungi to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
+        <div class="card"><small>Oylik to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
+        <div class="card"><small>Kutilayotgan</small><div class="v">0</div></div>
+        <div class="card"><small>Qarzdorlar</small><div class="v">0</div></div>
+      </div>
+      <div class="card"><b>So'nggi to'lovlar</b><div class="empty">Hali to'lovlar yo'q</div></div>
+    </section>
+    <section id="analytics" class="hide"><div class="card empty">Analitika — keyingi bosqichda tayyorlanadi</div></section>
+
+    <section id="settings" class="hide">
+      <div class="card"><form class="set" id="sf">
+        <b>Login va parolni o'zgartirish</b>
+        <input id="nu" placeholder="Yangi login" required>
+        <input id="np" type="password" placeholder="Yangi parol (kamida 6 belgi)" minlength="6" required>
+        <button class="gold">Saqlash</button><div class="ok" id="sok"></div></form></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="dlg"><form method="dialog" id="df">
+  <b>Yangi sartaroshxona</b>
+  <input class="set-i" id="sn" placeholder="Nomi" required style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx)">
+  <input id="sa" placeholder="Manzil (qishloq/tuman)" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx)">
+  <div class="btns"><button class="gold" value="ok">Qo'shish</button><button value="cancel" formnovalidate>Bekor</button></div>
+</form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const SUPABASE_URL='https://eqmmfmrswlypdocafrrq.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbW1mbXJzd2x5cGRvY2FmcnJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzQ3NDEsImV4cCI6MjEwNzQ1MDc0MX0.x6yKDTcIAjZNdZpOJcoCdRYdx1WicPprMp-h49S-e0M';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const em=u=>u.trim().toLowerCase()+'@barber.uz';
+function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
+sb.auth.getSession().then(({data})=>{if(data.session){show(true);loadShops()}});
+$('#eye').onclick=()=>{const p=$('#p');p.type=p.type==='password'?'text':'password'};
+$('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
+  const {error}=await sb.auth.signInWithPassword({email:em($('#u').value),password:$('#p').value});
+  if(error)$('#err').textContent="Login yoki parol noto'g'ri";else{show(true);loadShops()}};
+$('#logout').onclick=async()=>{await sb.auth.signOut();$('#p').value='';show(false)};
+$('#bg').onclick=()=>$('#side').classList.toggle('closed');
+if(innerWidth<=760)$('#side').classList.add('closed');
+const names={dashboard:'Dashboard',barbershops:'Barbershops',bots:'Bot Control',payments:"To'lovlar",analytics:'Analitika',settings:'Admin settings'};
+function go(p){$$('main section').forEach(s=>s.classList.toggle('hide',s.id!==p));
+  $$('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===p));$('#title').textContent=names[p];
+  if(innerWidth<=760)$('#side').classList.add('closed')}
+$$('.nav').forEach(n=>n.onclick=()=>go(n.dataset.p));
+$$('[data-go]').forEach(n=>n.onclick=()=>go(n.dataset.go));
+$$('.compose').forEach((c,i)=>{const send=()=>{const inp=c.querySelector('input');if(!inp.value.trim())return;
+  const m=document.createElement('div');m.className='msg';m.textContent=inp.value;$(i?'#s2':'#s1').append(m);inp.value=''};
+  c.querySelector('button').onclick=send;c.querySelector('input').onkeydown=e=>{if(e.key==='Enter')send()}});
+$('#sf').onsubmit=async e=>{e.preventDefault();const {error}=await sb.auth.updateUser({email:em($('#nu').value),password:$('#np').value});
+  $('#sok').textContent=error?'Xatolik: '+error.message:'Saqlandi ✓';if(!error)e.target.reset()};
+let shops=[];
+async function loadShops(){const {data}=await sb.from('barbershops').select('*').order('created_at',{ascending:false});shops=data||[];render()}
+function render(){const box=$('#shops');box.innerHTML='';
+  if(!shops.length){box.innerHTML='<div class="empty">Hali sartaroshxona qo\'shilmagan</div>';return}
+  shops.forEach(x=>{const r=document.createElement('div');r.className='row';const a=document.createElement('b');a.textContent=x.name;const c=document.createElement('span');c.textContent=x.address||'';r.append(a,c);box.append(r)})}
+$('#addShop').onclick=()=>$('#dlg').showModal();
+$('#df').addEventListener('submit',async e=>{if(e.submitter&&e.submitter.value==='ok'&&$('#sn').value.trim()){
+  const {error}=await sb.from('barbershops').insert({name:$('#sn').value.trim(),address:$('#sa').value.trim()});
+  if(error)alert(error.message);else{e.target.reset();loadShops()}}});
+</script>
+</body>
+</html>
