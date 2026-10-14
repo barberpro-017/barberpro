@@ -18,3 +18,6 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 ## Sartarosh mini app
 - `/barber/` — sartarosh paneli (login: admin saytda yaratilgan bot logini/paroli).
 - SQL Editor: `supabase/03_barber_app.sql` ni ishga tushiring.
+
+## Admin yangilanishi
+- SQL Editor: `supabase/04_admin_update.sql` ni ishga tushiring.

@@ -69,6 +69,11 @@ dialog form{display:grid;gap:12px}
 .del{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--bad)}
 .shop{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .shop:last-child{border:0}.shop small{color:var(--mu);display:block;margin-top:2px}
+dialog{margin:auto}
+.edit{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--gold)}
+.tag{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--bg);border:1px solid var(--line)}.tag.ok{color:var(--ok)}.tag.bad{color:var(--bad)}
+.mu{color:var(--mu);font-size:13px}.grid .card .v{font-size:22px}
+.charts{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.cw{position:relative;height:240px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -78,8 +83,8 @@ dialog form{display:grid;gap:12px}
   <h1><b>Xush</b> kelibsiz!</h1>
   <div class="sub">m-barberPro Admin</div>
   <form class="box" id="lf" autocomplete="off">
-    <label class="inp">👤<input id="u" placeholder="Login" autocomplete="username"></label>
-    <label class="inp">🔒<input id="p" type="password" placeholder="Parol" autocomplete="current-password"><button type="button" class="eye" id="eye">👁</button></label>
+    <label class="inp">👤<input id="u" placeholder="Login" autocomplete="off"></label>
+    <label class="inp">🔒<input id="p" type="password" placeholder="Parol" autocomplete="new-password"><button type="button" class="eye" id="eye">👁</button></label>
     <div class="err" id="err"></div>
     <button class="gold" type="submit">Kirish →</button>
   </form>
@@ -132,15 +137,20 @@ dialog form{display:grid;gap:12px}
     </section>
 
         <section id="payments" class="hide">
-      <div class="grid">
-        <div class="card"><small>Bugungi to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
-        <div class="card"><small>Oylik to'lovlar</small><div class="v">0 <em>so'm</em></div></div>
-        <div class="card"><small>Kutilayotgan</small><div class="v">0</div></div>
-        <div class="card"><small>Qarzdorlar</small><div class="v">0</div></div>
-      </div>
-      <div class="card"><b>So'nggi to'lovlar</b><div class="empty">Hali to'lovlar yo'q</div></div>
+      <div class="grid" id="pcards"></div>
+      <div class="card"><b>Tariflar</b><div class="grid" style="margin-top:10px">
+        <div class="card"><small>1 oylik</small><div class="v">100 000 <em>so'm</em></div></div>
+        <div class="card"><small>3 oylik</small><div class="v">250 000 <em>so'm</em></div></div>
+        <div class="card"><small>6 oylik</small><div class="v">500 000 <em>so'm</em></div></div></div></div>
+      <div><button class="gold" style="padding:13px 20px" id="addPay">➕ To'lov qo'shish</button></div>
+      <div class="card"><b>Sartaroshxonalar obunasi</b><div id="psub"></div></div>
+      <div class="card"><b>To'lovlar tarixi</b><div id="plist"></div></div>
     </section>
-    <section id="analytics" class="hide"><div class="card empty">Analitika — keyingi bosqichda tayyorlanadi</div></section>
+    <section id="analytics" class="hide">
+      <div class="grid" id="acards"></div>
+      <div class="charts"><div class="card"><b>Kirim va chiqim (30 kun)</b><div class="cw"><canvas id="c1"></canvas></div></div><div class="card"><b>Eng yaxshi sartaroshxonalar (tushum)</b><div class="cw"><canvas id="c2"></canvas></div></div><div class="card"><b>Xizmatlar ulushi</b><div class="cw"><canvas id="c3"></canvas></div></div><div class="card"><b>Navbatlar holati</b><div class="cw"><canvas id="c4"></canvas></div></div><div class="card"><b>Soatlar bo'yicha navbatlar</b><div class="cw"><canvas id="c5"></canvas></div></div><div class="card"><b>Hafta kunlari bo'yicha navbatlar</b><div class="cw"><canvas id="c6"></canvas></div></div><div class="card"><b>Obuna daromadi (6 oy)</b><div class="cw"><canvas id="c7"></canvas></div></div><div class="card"><b>Tariflar taqsimoti</b><div class="cw"><canvas id="c8"></canvas></div></div><div class="card"><b>Yangi sartaroshxonalar (6 oy)</b><div class="cw"><canvas id="c9"></canvas></div></div></div>
+      <div class="card"><b>Sartaroshxonalar reytingi (30 kun tushumi)</b><div id="atop"></div></div>
+    </section>
 
     <section id="settings" class="hide">
       <div class="card"><form class="set" id="sf">
@@ -153,66 +163,164 @@ dialog form{display:grid;gap:12px}
 </div>
 
 <dialog id="dlg"><form id="df" autocomplete="off">
-  <b>Yangi sartaroshxona</b>
+  <b id="dt">Yangi sartaroshxona</b>
   <input class="fi" id="f_token" placeholder="Bot token (BotFather'dan)" required>
   <input class="fi" id="f_login" placeholder="Bot uchun login" required>
-  <input class="fi" id="f_pass" type="password" placeholder="Bot uchun parol (kamida 6 belgi)" minlength="6" required>
+  <input class="fi" id="f_pass" type="password" placeholder="Bot uchun parol (kamida 6 belgi)" minlength="6" autocomplete="new-password" required>
   <input class="fi" id="f_barber" placeholder="Sartarosh ism familiyasi" required>
   <input class="fi" id="f_name" placeholder="Sartaroshxona nomi" required>
-  <input class="fi" id="f_phone" type="tel" placeholder="Sartarosh telefon raqami" required>
+  <input class="fi" id="f_phone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __" pattern="\+998 \d{2} \d{3} \d{2} \d{2}" title="+998 90 123 45 67" required>
   <input class="fi" id="f_addr" placeholder="Sartaroshxona manzili" required>
   <div class="err" id="f_err"></div>
   <div class="btns"><button class="gold" id="f_ok" type="submit">Yaratish</button><button type="button" id="f_cancel">Bekor qilish</button></div>
 </form></dialog>
+<dialog id="pdlg"><form id="pf">
+  <b>To'lov qo'shish</b>
+  <select class="fi" id="p_shop" required></select>
+  <select class="fi" id="p_plan"><option value="1">1 oylik — 100 000 so'm</option><option value="3">3 oylik — 250 000 so'm</option><option value="6">6 oylik — 500 000 so'm</option></select>
+  <input class="fi" id="p_date" type="date" required>
+  <div class="err" id="p_err"></div>
+  <div class="btns"><button class="gold" type="submit">Saqlash</button><button type="button" id="p_cancel">Bekor qilish</button></div>
+</form></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.js"></script>
 <script>
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const SUPABASE_URL='https://eqmmfmrswlypdocafrrq.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbW1mbXJzd2x5cGRvY2FmcnJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzQ3NDEsImV4cCI6MjEwNzQ1MDc0MX0.x6yKDTcIAjZNdZpOJcoCdRYdx1WicPprMp-h49S-e0M';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+// sessionStorage: yangi oyna/tab ochilganda qayta login so'raladi
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}});
 const em=u=>u.trim().toLowerCase()+'@barber.uz';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
+const fd=d=>d?new Date(d).toLocaleDateString('uz'):'—';
+const PLANS={1:{n:'1 oylik',p:100000},3:{n:'3 oylik',p:250000},6:{n:'6 oylik',p:500000}};
+const MON=['Yan','Fev','Mar','Apr','May','Iyn','Iyl','Avg','Sen','Okt','Noy','Dek'],WD=['Yak','Dush','Sesh','Chor','Pay','Jum','Shan'];
 function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
 sb.auth.getSession().then(({data})=>{if(data.session){show(true);loadShops()}});
 $('#eye').onclick=()=>{const p=$('#p');p.type=p.type==='password'?'text':'password'};
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
   const {error}=await sb.auth.signInWithPassword({email:em($('#u').value),password:$('#p').value});
   if(error)$('#err').textContent="Login yoki parol noto'g'ri";else{show(true);loadShops()}};
-$('#logout').onclick=async()=>{await sb.auth.signOut();$('#p').value='';show(false)};
+$('#logout').onclick=async()=>{await sb.auth.signOut();$('#p').value='';$('#u').value='';show(false)};
 $('#bg').onclick=()=>$('#side').classList.toggle('closed');
 if(innerWidth<=760)$('#side').classList.add('closed');
 const names={dashboard:'Dashboard',barbershops:'Barbershops',payments:"To'lovlar",analytics:'Analitika',settings:'Admin settings'};
 function go(p){$$('main section').forEach(s=>s.classList.toggle('hide',s.id!==p));
   $$('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===p));$('#title').textContent=names[p];
-  if(innerWidth<=760)$('#side').classList.add('closed')}
+  if(innerWidth<=760)$('#side').classList.add('closed');
+  if(p==='barbershops')loadShops();if(p==='payments')loadPayments();if(p==='analytics')loadAnalytics()}
 $$('.nav').forEach(n=>n.onclick=()=>go(n.dataset.p));
 $$('[data-go]').forEach(n=>n.onclick=()=>go(n.dataset.go));
-$$('.compose').forEach((c,i)=>{const send=()=>{const inp=c.querySelector('input');if(!inp.value.trim())return;
-  const m=document.createElement('div');m.className='msg';m.textContent=inp.value;$(i?'#s2':'#s1').append(m);inp.value=''};
-  c.querySelector('button').onclick=send;c.querySelector('input').onkeydown=e=>{if(e.key==='Enter')send()}});
 $('#sf').onsubmit=async e=>{e.preventDefault();const {error}=await sb.auth.updateUser({email:em($('#nu').value),password:$('#np').value});
   $('#sok').textContent=error?'Xatolik: '+error.message:'Saqlandi ✓';if(!error)e.target.reset()};
-let shops=[];
 async function api(path,body){const {data}=await sb.auth.getSession();
   const r=await fetch('/api/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(body)});
   const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Xatolik');return j}
-async function loadShops(){const {data}=await sb.from('barbershops').select('id,name,address,phone,barber_name,login,bot_username').order('created_at',{ascending:false});shops=data||[];render()}
-function render(){const box=$('#shops');box.innerHTML='';
+/* telefon shabloni: +998 __ ___ __ __ */
+function maskPhone(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||v.trim().startsWith('998'))d=d.slice(3);d=d.slice(0,9);
+  const p=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);return p.length?'+998 '+p.join(' '):'+998'}
+const ph=$('#f_phone');
+ph.addEventListener('focus',()=>{if(!ph.value)ph.value='+998 '});
+ph.addEventListener('input',()=>{ph.value=maskPhone(ph.value)});
+ph.addEventListener('blur',()=>{if(ph.value.trim()==='+998')ph.value=''});
+/* Barbershops */
+let shops=[],editId=null;
+async function loadShops(){const {data}=await sb.from('barbershops').select('id,name,address,phone,barber_name,login,bot_username,sub_until').order('created_at',{ascending:false});shops=data||[];renderShops()}
+function renderShops(){const box=$('#shops');box.innerHTML='';
   if(!shops.length){box.innerHTML='<div class="empty">Hali sartaroshxona qo\'shilmagan</div>';return}
   shops.forEach(x=>{const r=document.createElement('div');r.className='shop';
     const l=document.createElement('div');const b=document.createElement('b');b.textContent='💈 '+x.name;
     const m=document.createElement('small');m.textContent=[x.barber_name,x.phone,x.address,x.bot_username?'@'+x.bot_username:''].filter(Boolean).join(' · ');
-    l.append(b,m);const d=document.createElement('button');d.className='del';d.textContent='🗑 O\'chirish';
+    l.append(b,m);const w=document.createElement('div');w.className='btns';
+    const e=document.createElement('button');e.className='edit';e.textContent='✏️ Tahrirlash';e.onclick=()=>openShop(x);
+    const d=document.createElement('button');d.className='del';d.textContent='🗑 O\'chirish';
     d.onclick=async()=>{if(!confirm(x.name+' o\'chirilsinmi? Bot ham uzib qo\'yiladi.'))return;
-      try{await api('delete-barbershop',{id:x.id});loadShops()}catch(e){alert(e.message)}};
-    r.append(l,d);box.append(r)})}
-$('#addShop').onclick=()=>{$('#f_err').textContent='';$('#dlg').showModal()};
-$('#f_cancel').onclick=()=>{$('#dlg').close();$('#df').reset()};
+      try{await api('delete-barbershop',{id:x.id});loadShops()}catch(err){alert(err.message)}};
+    w.append(e,d);r.append(l,w);box.append(r)})}
+function openShop(x){editId=x?x.id:null;$('#dt').textContent=x?'Sartaroshxonani tahrirlash':'Yangi sartaroshxona';
+  $('#f_token').value='';$('#f_pass').value='';$('#f_token').required=!x;$('#f_pass').required=!x;
+  $('#f_token').placeholder=x?"Yangi bot token (o'zgartirmasangiz bo'sh qoldiring)":"Bot token (BotFather'dan)";
+  $('#f_pass').placeholder=x?"Yangi parol (o'zgartirmasangiz bo'sh qoldiring)":'Bot uchun parol (kamida 6 belgi)';
+  $('#f_login').value=x?x.login||'':'';$('#f_barber').value=x?x.barber_name||'':'';$('#f_name').value=x?x.name||'':'';
+  $('#f_phone').value=x?x.phone||'':'';$('#f_addr').value=x?x.address||'':'';
+  $('#f_ok').textContent=x?'Saqlash':'Yaratish';$('#f_err').textContent='';$('#dlg').showModal()}
+$('#addShop').onclick=()=>openShop(null);
+$('#f_cancel').onclick=()=>$('#dlg').close();
 $('#df').onsubmit=async e=>{e.preventDefault();const ok=$('#f_ok');ok.disabled=true;$('#f_err').textContent='';
-  try{await api('create-barbershop',{token:$('#f_token').value.trim(),login:$('#f_login').value.trim().toLowerCase(),password:$('#f_pass').value,
-    barber:$('#f_barber').value.trim(),name:$('#f_name').value.trim(),phone:$('#f_phone').value.trim(),address:$('#f_addr').value.trim()});
-    $('#dlg').close();e.target.reset();loadShops()}catch(x){$('#f_err').textContent=x.message}
+  try{const body={token:$('#f_token').value.trim(),login:$('#f_login').value.trim().toLowerCase(),password:$('#f_pass').value,
+    barber:$('#f_barber').value.trim(),name:$('#f_name').value.trim(),phone:$('#f_phone').value.trim(),address:$('#f_addr').value.trim()};
+    if(editId)body.id=editId;await api(editId?'update-barbershop':'create-barbershop',body);
+    $('#dlg').close();loadShops()}catch(x){$('#f_err').textContent=x.message}
   ok.disabled=false};
+/* Dashboard: xabar yuborish */
+$$('.compose').forEach((c,i)=>{const inp=c.querySelector('input'),btn=c.querySelector('button'),scr=i?$('#s2'):$('#s1');
+  const send=async()=>{const t=inp.value.trim();if(!t)return;
+    const m=document.createElement('div');m.className='msg';m.textContent=t;scr.append(m);inp.value='';
+    const n=document.createElement('div');n.style.cssText='font-size:12px;color:var(--mu);align-self:flex-end';scr.append(n);
+    if(i===0){btn.disabled=true;n.textContent='Yuborilmoqda...';
+      try{const r=await api('broadcast',{text:t});n.textContent=`✓ ${r.sent} ta chatga yuborildi (${r.shops}/${r.total} ta bot)`+(r.failed?`, ${r.failed} ta xato`:'')}
+      catch(x){n.textContent='Xatolik: '+x.message}btn.disabled=false}
+    else n.textContent='Mijozlar boti hali ulanmagan';};
+  btn.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()}});
+/* To'lovlar */
+let shopsP=[],pays=[];
+async function loadPayments(){const [a,b]=await Promise.all([sb.from('barbershops').select('id,name,sub_until').order('name'),sb.from('payments').select('*').order('paid_at',{ascending:false})]);
+  shopsP=a.data||[];pays=b.data||[];renderPayments()}
+function renderPayments(){const t0=new Date();t0.setHours(0,0,0,0);const nm=Object.fromEntries(shopsP.map(s=>[s.id,s.name])),now=new Date();
+  const sm=f=>pays.filter(p=>f(new Date(p.paid_at))).reduce((s,p)=>s+Number(p.amount),0);
+  const act=s=>s.sub_until&&new Date(s.sub_until)>=t0,na=shopsP.filter(act).length;
+  $('#pcards').innerHTML=[["Bugungi to'lovlar",money(sm(d=>d.toDateString()===now.toDateString()))],["Oylik to'lovlar",money(sm(d=>d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()))],['Faol obunalar',na],['Obunasi tugaganlar',shopsP.length-na]]
+    .map(c=>`<div class="card"><small>${c[0]}</small><div class="v">${c[1]}</div></div>`).join('');
+  $('#psub').innerHTML=shopsP.length?shopsP.map(s=>{const l=pays.find(p=>p.barbershop_id===s.id),ok=act(s);
+    return `<div class="row"><div><b>💈 ${esc(s.name)}</b><div class="mu">${l?`Oxirgi to'lov: ${fd(l.paid_at)} · ${esc(l.plan||'')} tarif · ${money(l.amount)}`:"To'lov qilinmagan"}</div></div><div style="text-align:right"><span class="tag ${ok?'ok':'bad'}">${ok?'Faol':'Tugagan'}</span><div class="mu">${fd(s.sub_until)} gacha</div></div></div>`}).join(''):'<div class="empty">Sartaroshxona yo\'q</div>';
+  $('#plist').innerHTML=pays.length?pays.slice(0,100).map(p=>`<div class="row"><div><b>${esc(nm[p.barbershop_id]||"O'chirilgan")}</b><div class="mu">${fd(p.paid_at)} · ${esc(p.plan||'')} tarif</div></div><b>${money(p.amount)}</b></div>`).join(''):'<div class="empty">Hali to\'lovlar yo\'q</div>'}
+$('#addPay').onclick=async()=>{if(!shopsP.length)await loadPayments();
+  if(!shopsP.length)return alert("Avval sartaroshxona qo'shing");
+  $('#p_shop').innerHTML=shopsP.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  $('#p_date').value=new Date().toISOString().slice(0,10);$('#p_err').textContent='';$('#pdlg').showModal()};
+$('#p_cancel').onclick=()=>$('#pdlg').close();
+$('#pf').onsubmit=async e=>{e.preventDefault();$('#p_err').textContent='';
+  const s=shopsP.find(x=>x.id===$('#p_shop').value),pl=PLANS[$('#p_plan').value],m=+$('#p_plan').value;
+  const base=new Date(Math.max(Date.now(),s.sub_until?new Date(s.sub_until).getTime():0));base.setMonth(base.getMonth()+m);
+  const a=await sb.from('payments').insert({barbershop_id:s.id,amount:pl.p,plan:pl.n,months:m,status:"to'langan",paid_at:new Date($('#p_date').value+'T12:00:00').toISOString()});
+  if(a.error)return $('#p_err').textContent=a.error.message;
+  const b=await sb.from('barbershops').update({sub_until:base.toISOString().slice(0,10)}).eq('id',s.id);
+  if(b.error)return $('#p_err').textContent=b.error.message;
+  $('#pdlg').close();loadPayments()};
+/* Analitika */
+let charts=[];const PAL=['#d9b06a','#7c6cff','#38d39f','#ff6b6b','#4cc3ff','#f78fb3','#9aa0ad'];
+function mk(id,type,labels,sets,opt={}){const c=$('#'+id);if(!c)return;
+  charts.push(new Chart(c,{type,data:{labels,datasets:sets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:sets.length>1||type==='doughnut',labels:{boxWidth:12}}},...opt}}))}
+const bar=(l,d,c=PAL[0])=>({label:l,data:d,backgroundColor:c,borderRadius:6}),dn=d=>({data:d,backgroundColor:PAL,borderWidth:0}),ln=(l,d,c)=>({label:l,data:d,borderColor:c,backgroundColor:c+'33',tension:.3,fill:true,pointRadius:2});
+async function loadAnalytics(){
+  if(!window.Chart){$('#acards').innerHTML='<div class="card empty">Diagramma kutubxonasi yuklanmadi</div>';return}
+  const cs=getComputedStyle(document.documentElement);Chart.defaults.color=cs.getPropertyValue('--mu').trim()||'#8a909b';Chart.defaults.borderColor=cs.getPropertyValue('--line').trim()||'#262a31';
+  const [sh,q,tx,pm]=await Promise.all([sb.from('barbershops').select('id,name,sub_until,created_at'),sb.from('queue').select('barbershop_id,service_name,price,status,at').limit(5000),
+    sb.from('transactions').select('barbershop_id,type,amount,created_at').limit(5000),sb.from('payments').select('amount,plan,paid_at').limit(5000)]);
+  const S=sh.data||[],Q=q.data||[],T=tx.data||[],P=pm.data||[];charts.forEach(c=>c.destroy());charts=[];
+  const t0=new Date();t0.setHours(0,0,0,0);const sum=(a,f=()=>true)=>a.filter(f).reduce((s,x)=>s+Number(x.amount),0);
+  const kirim=T.filter(x=>x.type==='kirim'),chiqim=T.filter(x=>x.type==='chiqim'),done=Q.filter(x=>x.status==='tugadi'),canc=Q.filter(x=>x.status==='bekor');
+  const dayKey=d=>{const x=new Date(d);return x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate()};
+  $('#acards').innerHTML=[['Sartaroshxonalar',S.length],['Faol obunalar',S.filter(s=>s.sub_until&&new Date(s.sub_until)>=t0).length],['Jami tushum',money(sum(kirim))],['Jami chiqim',money(sum(chiqim))],
+    ['Xizmat ko\'rsatilgan',done.length],["Bekor qilinish",(done.length+canc.length?Math.round(canc.length/(done.length+canc.length)*100):0)+'%'],["O'rtacha chek",money(done.length?done.reduce((s,x)=>s+Number(x.price),0)/done.length:0)],['Obuna daromadi',money(sum(P))]]
+    .map(c=>`<div class="card"><small>${c[0]}</small><div class="v">${c[1]}</div></div>`).join('');
+  const days=[...Array(30)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-29+i);return d});
+  mk('c1','line',days.map(d=>d.getDate()+'.'+(d.getMonth()+1)),[ln('Kirim',days.map(d=>sum(kirim,x=>dayKey(x.created_at)===dayKey(d))),'#38d39f'),ln('Chiqim',days.map(d=>sum(chiqim,x=>dayKey(x.created_at)===dayKey(d))),'#ff6b6b')]);
+  const since=days[0],byShop=S.map(s=>({n:s.name,inc:sum(kirim,x=>x.barbershop_id===s.id&&new Date(x.created_at)>=since),cl:done.filter(x=>x.barbershop_id===s.id).length,
+    cn:canc.filter(x=>x.barbershop_id===s.id).length})).sort((a,b)=>b.inc-a.inc);
+  mk('c2','bar',byShop.slice(0,8).map(x=>x.n),[bar('Tushum (30 kun)',byShop.slice(0,8).map(x=>x.inc))],{indexAxis:'y'});
+  const sv={};done.forEach(x=>sv[x.service_name]=(sv[x.service_name]||0)+1);const tp=Object.entries(sv).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  mk('c3','doughnut',tp.map(x=>x[0]),[dn(tp.map(x=>x[1]))]);
+  const st=['kutilmoqda','jarayonda','tugadi','bekor'];mk('c4','doughnut',['Kutilmoqda','Jarayonda','Tugagan','Bekor'],[dn(st.map(k=>Q.filter(x=>x.status===k).length))]);
+  const hrs=[...Array(17)].map((_,i)=>i+7);mk('c5','bar',hrs.map(h=>h+':00'),[bar('Navbatlar',hrs.map(h=>Q.filter(x=>new Date(x.at).getHours()===h).length),PAL[1])]);
+  mk('c6','bar',[1,2,3,4,5,6,0].map(i=>WD[i]),[bar('Navbatlar',[1,2,3,4,5,6,0].map(i=>Q.filter(x=>new Date(x.at).getDay()===i).length),PAL[2])]);
+  const ms=[...Array(6)].map((_,i)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-5+i);return d}),inM=(v,d)=>{const x=new Date(v);return x.getMonth()===d.getMonth()&&x.getFullYear()===d.getFullYear()};
+  mk('c7','bar',ms.map(d=>MON[d.getMonth()]),[bar("Obuna daromadi",ms.map(d=>sum(P,x=>inM(x.paid_at,d))),PAL[0])]);
+  const pl={};P.forEach(x=>pl[x.plan||'—']=(pl[x.plan||'—']||0)+1);mk('c8','doughnut',Object.keys(pl),[dn(Object.values(pl))]);
+  mk('c9','line',ms.map(d=>MON[d.getMonth()]),[ln("Yangi sartaroshxonalar",ms.map(d=>S.filter(s=>inM(s.created_at,d)).length),'#7c6cff')],{scales:{y:{ticks:{precision:0}}}});
+  $('#atop').innerHTML=byShop.length?byShop.map((x,i)=>`<div class="row"><div><b>${i+1}. ${esc(x.n)}</b><div class="mu">${x.cl} ta mijoz · ${x.cn} ta bekor</div></div><b class="gd">${money(x.inc)}</b></div>`).join(''):'<div class="empty">Ma\'lumot yo\'q</div>'}
 </script>
 </body>
 </html>
