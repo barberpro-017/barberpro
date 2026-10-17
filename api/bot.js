@@ -8,7 +8,10 @@ module.exports = async (req, res) => {
   const m = req.body && req.body.message;
   if (m && m.chat) await db('bot_chats?on_conflict=barbershop_id,chat_id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ barbershop_id: id, chat_id: m.chat.id }) });
   if (m && m.text && m.text.startsWith('/start')) {
-    await tg(row.bot_token, 'sendMessage', { chat_id: m.chat.id, text: "💈 Xush kelibsiz!\nBoshqaruv panelini ochish uchun tugmani bosing.", reply_markup: { inline_keyboard: [[{ text: '💈 Ochish', web_app: { url: `https://${host(req)}/barber/` } }]] } });
+    const url = `https://${host(req)}/barber/?s=${id}`;
+    await Promise.all([
+      tg(row.bot_token, 'sendMessage', { chat_id: m.chat.id, text: "💈 Xush kelibsiz!\nBoshqaruv panelini ochish uchun tugmani bosing.", reply_markup: { inline_keyboard: [[{ text: '💈 Ochish', web_app: { url } }]] } }),
+      tg(row.bot_token, 'setChatMenuButton', { chat_id: m.chat.id, menu_button: { type: 'web_app', text: 'Ochish', web_app: { url } } })]);
   }
   res.status(200).json({ ok: true });
 };

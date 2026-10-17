@@ -199,8 +199,8 @@ dialog{margin:auto}
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const SUPABASE_URL='https://eqmmfmrswlypdocafrrq.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbW1mbXJzd2x5cGRvY2FmcnJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzQ3NDEsImV4cCI6MjEwNzQ1MDc0MX0.x6yKDTcIAjZNdZpOJcoCdRYdx1WicPprMp-h49S-e0M';
-// sessionStorage: yangi oyna/tab ochilganda qayta login so'raladi
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true}});
+// sessiya saqlanmaydi: sahifa yopilsa yoki yangilansa qayta login so'raladi
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}});
 const em=u=>u.trim().toLowerCase()+'@barber.uz';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";

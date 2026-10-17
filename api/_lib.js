@@ -36,4 +36,14 @@ async function sweep(shopId) {
     if (ct && L.client_tg_id) await tg(ct, 'sendMessage', { chat_id: L.client_tg_id, text: "⏰ Siz belgilangan vaqtda kelmadingiz, shuning uchun navbatingiz 1 ta pastga tushdi." });
   }
 }
-module.exports = { crypto, admin, db, tg, host, sweep };
+function verifyInit(initData, token, maxAge = 86400) {
+  const p = new URLSearchParams(initData), hash = p.get('hash');
+  if (!hash) return null; p.delete('hash');
+  const str = [...p.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1).map(([k, v]) => k + '=' + v).join('\n');
+  const key = crypto.createHmac('sha256', 'WebAppData').update(token).digest();
+  const h = crypto.createHmac('sha256', key).update(str).digest('hex');
+  if (h.length !== hash.length || !crypto.timingSafeEqual(Buffer.from(h), Buffer.from(hash))) return null;
+  if (Date.now() / 1000 - Number(p.get('auth_date')) > maxAge) return null;
+  try { return JSON.parse(p.get('user')); } catch (e) { return null; }
+}
+module.exports = { crypto, admin, db, tg, host, sweep, verifyInit, dayStartISO };

@@ -71,18 +71,20 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
 const day=d=>new Date(d).toDateString(),today=d=>day(d)===day(new Date());
 const hm=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
-let token=ls.g('bt'),shop={},D={services:[],queue:[],transactions:[]},page='dash';
+ls.d('bt');let token=null,shop={},D={services:[],queue:[],transactions:[]},page='dash';
 const PAGES=[['dash','📊','Dashboard'],['queue','🕒','Navbatlar'],['services','✂️','Xizmatlar'],['stats','📈','Analitika'],['cash','💰','Kirim va Chiqim'],['sub','⭐','Obuna'],['help','❓','Yordam']];
-async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,token,...o})});
+async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,token,shop:SHOP,initData:tg?tg.initData:'',...o})});
  const j=await r.json().catch(()=>({}));if(r.status===401&&action!=='login'){out();throw new Error('Qayta kiring')}if(!r.ok)throw new Error(j.error||'Xatolik');return j}
 async function load(){const [s,a,b,c]=await Promise.all([call('shop'),...['services','queue','transactions'].map(t=>call('list',{table:t}))]);
  shop=s.shop||{};D.services=a.rows;D.queue=b.rows;D.transactions=c.rows;draw()}
 function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
 function out(){token=null;ls.d('bt');show(false)}
 async function start(){show(true);try{await load()}catch(e){}}
-if(token)start();
+const SHOP=new URLSearchParams(location.search).get('s')||'';
+if(!SHOP||!(tg&&tg.initData)){$('#err').textContent="Iltimos, ilovani sartaroshxona Telegram botingiz orqali oching (/start)";$('#lf button').disabled=true}
+let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden)hid=Date.now();else if(token&&hid&&Date.now()-hid>300000)out()});
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
- try{const j=await call('login',{login:$('#u').value,password:$('#p').value});token=j.token;ls.s('bt',token);$('#p').value='';start()}catch(x){$('#err').textContent=x.message}};
+ try{const j=await call('login',{login:$('#u').value,password:$('#p').value});token=j.token;$('#p').value='';start()}catch(x){$('#err').textContent=x.message}};
 $('#out').onclick=out;$('#bg').onclick=()=>$('#side').classList.toggle('closed');
 if(innerWidth<=760)$('#side').classList.add('closed');
 $('#nav').innerHTML=PAGES.map(p=>`<button class="nav" data-p="${p[0]}">${p[1]} ${p[2]}</button>`).join('');

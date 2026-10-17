@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     const secret = crypto.randomBytes(24).toString('hex'), h = host(req);
     await db('barbershop_secrets?barbershop_id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ bot_token: newTok, webhook_secret: secret }) });
     const w = await tg(newTok, 'setWebhook', { url: `https://${h}/api/bot?id=${id}`, secret_token: secret });
-    await tg(newTok, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Ochish', web_app: { url: `https://${h}/barber/` } } });
+    await tg(newTok, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Ochish', web_app: { url: `https://${h}/barber/?s=${id}` } } });
     await db('bot_chats?barbershop_id=eq.' + id, { method: 'DELETE' });
     if (!w.ok) return res.status(500).json({ error: "Yangi botni ulab bo'lmadi" });
   }

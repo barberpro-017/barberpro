@@ -17,6 +17,6 @@ module.exports = async (req, res) => {
   const sec = await db('barbershop_secrets', { method: 'POST', body: JSON.stringify({ barbershop_id: shop.id, bot_token: token, webhook_secret: secret }) });
   const w = sec.ok ? await tg(token, 'setWebhook', { url: `https://${h}/api/bot?id=${shop.id}`, secret_token: secret }) : { ok: false };
   if (!w.ok) { await db('barbershops?id=eq.' + shop.id, { method: 'DELETE' }); return res.status(500).json({ error: "Botni ulab bo'lmadi" }); }
-  await tg(token, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Ochish', web_app: { url: `https://${h}/barber/` } } });
+  await tg(token, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Ochish', web_app: { url: `https://${h}/barber/?s=${shop.id}` } } });
   res.json({ ok: true, id: shop.id });
 };

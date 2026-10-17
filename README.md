@@ -29,3 +29,7 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 
 ## Yangilanish (ish holati, kechikish qoidasi)
 - SQL Editor: `supabase/06_queue_rules.sql` ni ishga tushiring.
+
+## Xavfsizlik yangilanishi
+- SQL Editor: `supabase/07_security.sql` ni ishga tushiring.
+- Har bir sartarosh `/start` ni o'z botida bir marta bosishi kerak (yangi ilova havolasi shunda o'rnatiladi).

@@ -50,6 +50,11 @@ textarea:focus,input.in:focus{border-color:var(--v)}
 #sDone{text-align:center;padding-top:18vh}.ok{font-size:70px}
 .bd{font-style:normal;font-size:12px;font-weight:600;width:max-content;padding:3px 10px;border-radius:20px}.bd.on{background:#3ddc9722;color:var(--ok)}.bd.off{background:#ff6b6b22;color:var(--bad)}
 .shop.cl{opacity:.72}.hint{color:var(--m);font-size:12px;margin-top:6px;line-height:1.4}
+.ord{background:linear-gradient(135deg,var(--c2),var(--c));border:1px solid var(--l);border-radius:20px;padding:16px;margin-bottom:12px}
+.oh{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.st{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:#ffffff14;text-align:right}.st.ok{color:var(--ok)}.st.go{color:var(--g)}.st.bad{color:var(--bad)}.st.wait{color:#9ab4ff}
+.oq{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#0d0d20;border:1px solid var(--l);border-radius:16px;padding:12px 14px;margin-top:10px}
+.oq .t2{font-weight:700;color:var(--ok);text-align:right}.cx{margin-top:10px;background:none;border:1px solid var(--l);border-radius:10px;padding:8px 12px;color:var(--bad);cursor:pointer}
 </style></head><body>
 <div class="bg"><i style="left:6%;top:12%">✂️</i><i style="right:8%;top:22%;animation-delay:-3s">💈</i><i style="left:12%;top:58%;animation-delay:-5s">🪒</i><i style="right:14%;top:70%;animation-delay:-2s">✂️</i><i style="left:46%;top:86%;animation-delay:-6s">💈</i></div>
 
@@ -65,12 +70,12 @@ textarea:focus,input.in:focus{border-color:var(--v)}
 </section>
 
 <section class="scr" id="sRegion">
- <div class="top"><button class="back" data-b="sWelcome">‹</button><h2 class="serif">Hududni tanlang</h2></div>
+ <div class="top"><button class="back" data-b="sWelcome">‹</button><h2 class="serif" style="flex:1">Hududni tanlang</h2><button class="back" data-o="1" title="Buyurtmalarim">📋</button></div>
  <div class="sub">Qaysi hududdagi sartaroshni qidiryapsiz?</div><div id="regList"></div>
 </section>
 
 <section class="scr" id="sShops">
- <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" id="rTitle"></h2></div>
+ <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" id="rTitle" style="flex:1"></h2><button class="back" data-o="1" title="Buyurtmalarim">📋</button></div>
  <div class="sub">Sartaroshni tanlang</div><div id="shopList"></div>
 </section>
 
@@ -85,10 +90,10 @@ textarea:focus,input.in:focus{border-color:var(--v)}
  <button class="cta" id="book" style="max-width:none;margin-top:8px" disabled>Navbatga yozilish</button>
 </section>
 
-<section class="scr" id="sDone">
- <div class="ok">✅</div><h2 class="serif" style="margin:14px 0 8px">So'rov yuborildi!</h2>
- <p class="mu" style="margin-bottom:26px;line-height:1.5">Sartarosh tasdiqlashi bilan sizga navbat belgilanadi.</p>
- <button class="cta" id="again">Sartaroshlar ro'yxati</button>
+<section class="scr" id="sOrders">
+ <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" style="flex:1">Buyurtmalarim</h2><button class="back" id="ordRef" title="Yangilash">🔄</button></div>
+ <div id="ordList"></div>
+ <button class="cta" id="newOrd" style="max-width:none;margin-top:6px">➕ Yangi navbat olish</button>
 </section>
 
 <script>
@@ -126,7 +131,21 @@ function maskPhone(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||
 const cp=$('#cphone');cp.addEventListener('focus',()=>{if(!cp.value)cp.value='+998 '});cp.addEventListener('input',()=>{cp.value=maskPhone(cp.value)});cp.addEventListener('blur',()=>{if(cp.value.trim()==='+998')cp.value=''});
 $('#book').onclick=async()=>{const b=$('#book');if(!$('#btime').value){$('#be').textContent='Soatni belgilang';return}
  b.disabled=true;b.textContent='Yuborilmoqda...';$('#be').textContent='';
- try{await api('book',{id:cur.id,service:svc,time:$('#btime').value,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sDone')}
+ try{await api('book',{id:cur.id,service:svc,time:$('#btime').value,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sOrders');loadOrders()}
  catch(x){$('#be').textContent=x.message;b.disabled=false}b.textContent='Navbatga yozilish'};
-$('#again').onclick=async()=>{go('sShops');try{shops=(await api('shops')).shops;drawShops()}catch(e){}};
+const ST={sorov:['⏳ Tasdiqlanishi kutilmoqda','wait'],kutilmoqda:['✅ Navbat tasdiqlandi','ok'],jarayonda:['✂️ Xizmat boshlandi','go'],tugadi:['🏁 Yakunlandi',''],bekor:['❌ Bekor qilindi','bad']};
+const hmT=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
+async function loadOrders(quiet){if(!quiet)$('#ordList').innerHTML='<div class="empty">Yuklanmoqda...</div>';
+ try{drawOrders((await api('orders')).orders)}catch(e){$('#ordList').innerHTML='<div class="err">'+esc(e.message)+'</div>'}}
+function drawOrders(L){$('#ordList').innerHTML=L.length?L.slice().reverse().map(o=>{const st=ST[o.status]||['',''],act=o.ahead!==null;
+ const w=o.status==='jarayonda'?'Xizmat boshlandi':(o.ahead===0&&o.minutes<=0?'Navbat sizda, boring!':'~'+dur(o.minutes)+' ichida');
+ return `<div class="ord"><div class="oh"><b>💈 ${esc(o.shop)}</b><span class="st ${st[1]}">${st[0]}</span></div>
+ <div class="mu">✂ ${esc(o.barber)} · ${esc(o.service)} · ${money(o.price)}</div><div class="mu">🕒 Soat ${hmT(o.at)}${o.delayed?' · ⏰ kechikkaningiz uchun 1 ta pastga tushdingiz':''}</div>
+ ${o.note?`<div class="mu">💬 ${esc(o.note)}</div>`:''}
+ ${act?`<div class="oq"><div class="qn">${o.ahead}<small>sizdan oldin</small></div><div class="t2">⏱ ${w}</div></div>`:''}
+ ${o.status==='sorov'||o.status==='kutilmoqda'?`<button class="cx" data-c="${esc(o.id)}">Bekor qilish</button>`:''}</div>`}).join(''):'<div class="empty">Bugun buyurtmalaringiz yo\'q</div>'}
+$('#ordList').onclick=async e=>{const b=e.target.closest('[data-c]');if(!b||!confirm('Navbat bekor qilinsinmi?'))return;try{await api('cancel',{order:b.dataset.c});loadOrders()}catch(x){alert(x.message)}};
+document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{go('sOrders');loadOrders()});
+$('#ordRef').onclick=()=>loadOrders();$('#newOrd').onclick=()=>{go('sRegion');loadShops()};
+setInterval(()=>{if($('#sOrders').classList.contains('on')&&!document.hidden)loadOrders(true)},30000);
 </script></body></html>

@@ -1,4 +1,4 @@
-const { crypto, db, tg, sweep } = require('./_lib');
+const { crypto, db, tg, sweep, dayStartISO } = require('./_lib');
 const UUID = /^[0-9a-f-]{36}$/;
 function verify(initData, token) {
   const p = new URLSearchParams(initData), hash = p.get('hash');
@@ -32,6 +32,36 @@ module.exports = async (req, res) => {
       return { id: x.id, name: x.name, region: x.address, barber: x.barber_name, phone: x.phone, open: !!x.is_open, count: w.length, minutes: w.reduce((a, y) => a + (y.duration_min || 30), 0) };
     });
     return res.json({ shops });
+  }
+  if (b.action === 'orders') {
+    await sweep();
+    const start = dayStartISO();
+    const mine = await db(`queue?client_tg_id=eq.${user.id}&at=gte.${encodeURIComponent(start)}&select=id,barbershop_id,service_name,price,duration_min,at,rank_at,status,note,delayed&order=at.asc&limit=30`);
+    const M = mine.data || [];
+    if (!M.length) return res.json({ orders: [] });
+    const list = '(' + [...new Set(M.map(x => x.barbershop_id))].join(',') + ')';
+    const [sh, wq] = await Promise.all([
+      db(`barbershops?id=in.${list}&select=id,name,barber_name,phone,is_open`),
+      db(`queue?barbershop_id=in.${list}&status=in.(kutilmoqda,jarayonda)&at=gte.${encodeURIComponent(start)}&select=id,barbershop_id,at,rank_at,duration_min`)]);
+    const S = Object.fromEntries((sh.data || []).map(x => [x.id, x])), W = wq.data || [], key = x => new Date(x.rank_at || x.at).getTime(), now = Date.now();
+    const orders = M.map(o => {
+      const sp = S[o.barbershop_id] || {};
+      let ahead = null, minutes = null;
+      if (['sorov', 'kutilmoqda', 'jarayonda'].includes(o.status)) {
+        const k = o.status === 'sorov' ? new Date(o.at).getTime() : key(o);
+        const before = W.filter(x => x.barbershop_id === o.barbershop_id && x.id !== o.id && key(x) < k);
+        ahead = before.length;
+        minutes = Math.max(before.reduce((a, x) => a + (x.duration_min || 30), 0), Math.ceil((new Date(o.at).getTime() - now) / 60000), 0);
+      }
+      return { id: o.id, shop: sp.name || '', barber: sp.barber_name || '', phone: sp.phone || '', service: o.service_name, price: o.price, duration: o.duration_min || 30, at: o.at, status: o.status, note: o.note, delayed: o.delayed, ahead, minutes };
+    });
+    return res.json({ orders });
+  }
+  if (b.action === 'cancel') {
+    const oid = String(b.order || '');
+    if (!UUID.test(oid)) return bad(res, 400, "Noto'g'ri so'rov");
+    await db(`queue?id=eq.${oid}&client_tg_id=eq.${user.id}&status=in.(sorov,kutilmoqda)`, { method: 'PATCH', body: JSON.stringify({ status: 'bekor' }) });
+    return res.json({ ok: true });
   }
   const id = String(b.id || '');
   if (!UUID.test(id)) return bad(res, 400, "Noto'g'ri so'rov");
