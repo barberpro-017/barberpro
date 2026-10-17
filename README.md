@@ -26,3 +26,6 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 - SQL Editor: `supabase/05_client_bot.sql` ni ishga tushiring.
 - Admin saytda Client bot bo'limiga BotFather tokenini kiriting.
 - Mijoz ilovasi: `/client/`
+
+## Yangilanish (ish holati, kechikish qoidasi)
+- SQL Editor: `supabase/06_queue_rules.sql` ni ishga tushiring.

@@ -48,6 +48,8 @@ textarea,input.in{width:100%;background:var(--c);border:1px solid var(--l);borde
 textarea:focus,input.in:focus{border-color:var(--v)}
 .mu{color:var(--m)}.err{color:var(--bad);text-align:center;margin:10px 0;font-size:14px}.empty{text-align:center;color:var(--m);padding:40px 10px}
 #sDone{text-align:center;padding-top:18vh}.ok{font-size:70px}
+.bd{font-style:normal;font-size:12px;font-weight:600;width:max-content;padding:3px 10px;border-radius:20px}.bd.on{background:#3ddc9722;color:var(--ok)}.bd.off{background:#ff6b6b22;color:var(--bad)}
+.shop.cl{opacity:.72}.hint{color:var(--m);font-size:12px;margin-top:6px;line-height:1.4}
 </style></head><body>
 <div class="bg"><i style="left:6%;top:12%">✂️</i><i style="right:8%;top:22%;animation-delay:-3s">💈</i><i style="left:12%;top:58%;animation-delay:-5s">🪒</i><i style="right:14%;top:70%;animation-delay:-2s">✂️</i><i style="left:46%;top:86%;animation-delay:-6s">💈</i></div>
 
@@ -76,6 +78,7 @@ textarea:focus,input.in:focus{border-color:var(--v)}
  <div class="top"><button class="back" data-b="sShops">‹</button><h2 class="serif" id="dShop"></h2></div>
  <div class="who"><small>Sartarosh</small><h2 class="serif" id="dName"></h2><a id="dPhone" href="#"></a></div>
  <label class="lb">Xizmatni tanlang</label><div class="sv" id="svcList"></div>
+ <label class="lb">Soat nechchida borasiz?</label><input class="in" id="btime" type="time" required><div class="hint">Belgilangan vaqtdan 10 daqiqa kechiksangiz, navbatingiz keyingi mijozga beriladi va siz 1 ta pastga tushasiz.</div>
  <label class="lb">Izoh (ixtiyoriy)</label><textarea id="note" rows="3" maxlength="300" placeholder="Masalan: soqolni ham tuzating"></textarea>
  <label class="lb">Telefon raqamingiz (ixtiyoriy)</label><input class="in" id="cphone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __">
  <div class="err" id="be"></div>
@@ -109,19 +112,21 @@ function drawRegions(){const m=new Map();shops.forEach(s=>{const r=(s.region||''
 $('#regList').onclick=e=>{const b=e.target.closest('.reg');if(!b)return;region=b.dataset.k;drawShops();go('sShops')};
 const wait=m=>m<=0?"Kutish yo'q":'~'+dur(m);
 function drawShops(){const L=shops.filter(s=>(s.region||'').trim().toLowerCase()===region);$('#rTitle').textContent=L[0]?L[0].region.trim():'';
- $('#shopList').innerHTML=L.map(s=>`<button class="shop" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
+ $('#shopList').innerHTML=L.map(s=>`<button class="shop ${s.open?'':'cl'}" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><em class="bd ${s.open?'on':'off'}">${s.open?'🟢 Ishlamoqda':'🔴 Yopiq'}</em><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
 $('#shopList').onclick=async e=>{const b=e.target.closest('.shop');if(!b)return;cur=shops.find(s=>s.id===b.dataset.id);svc=null;
  $('#dShop').textContent=cur.name;$('#dName').textContent=cur.barber;$('#dPhone').textContent='📞 '+cur.phone;$('#dPhone').href='tel:'+String(cur.phone).replace(/[^+\d]/g,'');
- $('#note').value='';$('#cphone').value='';$('#be').textContent='';$('#book').disabled=true;$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
+ $('#note').value='';$('#cphone').value='';$('#btime').value=defTime();$('#be').textContent=cur.open?'':"Sartaroshxona hozir yopiq, navbat olib bo'lmaydi";$('#book').disabled=true;$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
  try{const r=await api('shop',{id:cur.id});
   $('#svcList').innerHTML=r.services.length?r.services.map(x=>`<button class="svc" data-id="${esc(x.id)}"><span><b>${esc(x.name)}</b><small>⏱ ${dur(x.duration_min)}</small></span><span class="pr">${money(x.price)}</span></button>`).join(''):'<div class="mu">Sartarosh hali xizmat qo\'shmagan</div>'}
  catch(x){$('#svcList').innerHTML='<div class="err">'+esc(x.message)+'</div>'}};
-$('#svcList').onclick=e=>{const b=e.target.closest('.svc');if(!b)return;svc=b.dataset.id;document.querySelectorAll('.svc').forEach(x=>x.classList.toggle('on',x===b));$('#book').disabled=false};
+$('#svcList').onclick=e=>{const b=e.target.closest('.svc');if(!b)return;svc=b.dataset.id;document.querySelectorAll('.svc').forEach(x=>x.classList.toggle('on',x===b));$('#book').disabled=!cur.open};
+function defTime(){const d=new Date(Date.now()+20*60000);d.setMinutes(Math.ceil(d.getMinutes()/5)*5,0,0);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 function maskPhone(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||v.trim().startsWith('998'))d=d.slice(3);d=d.slice(0,9);
  const p=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);return p.length?'+998 '+p.join(' '):'+998'}
 const cp=$('#cphone');cp.addEventListener('focus',()=>{if(!cp.value)cp.value='+998 '});cp.addEventListener('input',()=>{cp.value=maskPhone(cp.value)});cp.addEventListener('blur',()=>{if(cp.value.trim()==='+998')cp.value=''});
-$('#book').onclick=async()=>{const b=$('#book');b.disabled=true;b.textContent='Yuborilmoqda...';$('#be').textContent='';
- try{await api('book',{id:cur.id,service:svc,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sDone')}
+$('#book').onclick=async()=>{const b=$('#book');if(!$('#btime').value){$('#be').textContent='Soatni belgilang';return}
+ b.disabled=true;b.textContent='Yuborilmoqda...';$('#be').textContent='';
+ try{await api('book',{id:cur.id,service:svc,time:$('#btime').value,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sDone')}
  catch(x){$('#be').textContent=x.message;b.disabled=false}b.textContent='Navbatga yozilish'};
 $('#again').onclick=async()=>{go('sShops');try{shops=(await api('shops')).shops;drawShops()}catch(e){}};
 </script></body></html>

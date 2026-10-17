@@ -1,4 +1,4 @@
-const { crypto, db } = require('./_lib');
+const { crypto, db, sweep } = require('./_lib');
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const sign = p => crypto.createHmac('sha256', KEY).update(p).digest('base64url');
 const mk = id => { const p = Buffer.from(JSON.stringify({ id, exp: Date.now() + 30 * 864e5 })).toString('base64url'); return p + '.' + sign(p); };
@@ -19,13 +19,18 @@ module.exports = async (req, res) => {
   const id = ver(b.token);
   if (!id) return bad(res, 401, 'Qayta kiring');
   if (b.action === 'shop') {
-    const r = await db('barbershops?id=eq.' + id + '&select=name,barber_name,address,sub_until');
+    const r = await db('barbershops?id=eq.' + id + '&select=name,barber_name,address,sub_until,is_open');
     return res.json({ shop: r.data && r.data[0] });
+  }
+  if (b.action === 'setopen') {
+    await db('barbershops?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ is_open: !!b.value }) });
+    return res.json({ ok: true });
   }
   if (!TABLES[b.table]) return bad(res, 400, "Noto'g'ri so'rov");
   const t = b.table, uid = String(b.id || '');
   const clean = o => { const r = { ...(o || {}) }; delete r.id; delete r.barbershop_id; delete r.created_at; return r; };
   if (b.action === 'list') {
+    if (t === 'queue') await sweep(id);
     const r = await db(`${t}?barbershop_id=eq.${id}&select=*&order=created_at.desc&limit=500`);
     return res.json({ rows: r.data || [] });
   }

@@ -1,4 +1,4 @@
-const { crypto, db, tg } = require('./_lib');
+const { crypto, db, tg, sweep } = require('./_lib');
 const UUID = /^[0-9a-f-]{36}$/;
 function verify(initData, token) {
   const p = new URLSearchParams(initData), hash = p.get('hash');
@@ -20,15 +20,16 @@ module.exports = async (req, res) => {
   const user = verify(String(b.initData || ''), token);
   if (!user) return bad(res, 401, 'Iltimos, ilovani Telegram bot orqali qayta oching');
   if (b.action === 'shops') {
+    await sweep();
     const d = new Date(Date.now() + 5 * 3600e3);
     const start = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - 5 * 3600e3).toISOString();
     const [s, q] = await Promise.all([
-      db('barbershops?select=id,name,address,barber_name,phone,sub_until&order=name'),
+      db('barbershops?select=id,name,address,barber_name,phone,sub_until,is_open&order=name'),
       db('queue?status=in.(kutilmoqda,jarayonda)&at=gte.' + encodeURIComponent(start) + '&select=barbershop_id,duration_min')]);
     const today = new Date().toISOString().slice(0, 10), Q = q.data || [];
     const shops = (s.data || []).filter(x => !x.sub_until || x.sub_until >= today).map(x => {
       const w = Q.filter(y => y.barbershop_id === x.id);
-      return { id: x.id, name: x.name, region: x.address, barber: x.barber_name, phone: x.phone, count: w.length, minutes: w.reduce((a, y) => a + (y.duration_min || 30), 0) };
+      return { id: x.id, name: x.name, region: x.address, barber: x.barber_name, phone: x.phone, open: !!x.is_open, count: w.length, minutes: w.reduce((a, y) => a + (y.duration_min || 30), 0) };
     });
     return res.json({ shops });
   }
@@ -43,18 +44,25 @@ module.exports = async (req, res) => {
     if (!UUID.test(sid)) return bad(res, 400, 'Xizmatni tanlang');
     const phone = String(b.phone || '').trim();
     if (phone && !/^\+998 \d{2} \d{3} \d{2} \d{2}$/.test(phone)) return bad(res, 400, "Telefon raqami noto'g'ri");
+    const tm = String(b.time || '');
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(tm)) return bad(res, 400, 'Soatni belgilang');
+    const tz = new Date(Date.now() + 5 * 3600e3), atMs = Date.UTC(tz.getUTCFullYear(), tz.getUTCMonth(), tz.getUTCDate(), +tm.slice(0, 2) - 5, +tm.slice(3));
+    if (atMs < Date.now() - 60000) return bad(res, 400, "Bu vaqt o'tib ketgan, keyinroq soat tanlang");
+    const sh = await db('barbershops?id=eq.' + id + '&select=is_open,sub_until'), shp = sh.data && sh.data[0];
+    if (!shp) return bad(res, 404, 'Sartaroshxona topilmadi');
+    if (!shp.is_open) return bad(res, 400, 'Sartaroshxona hozir yopiq');
     const sv = await db(`services?id=eq.${sid}&barbershop_id=eq.${id}&select=name,price,duration_min`);
     const svc = sv.data && sv.data[0];
     if (!svc) return bad(res, 404, 'Xizmat topilmadi');
     const open = await db(`queue?barbershop_id=eq.${id}&client_tg_id=eq.${user.id}&status=in.(sorov,kutilmoqda,jarayonda)&select=id`);
     if (open.data && open.data.length >= 2) return bad(res, 429, "Sizda bu sartaroshxonada faol navbat bor");
     const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Mijoz', note = String(b.note || '').trim().slice(0, 300);
-    const ins = await db('queue', { method: 'POST', body: JSON.stringify({ barbershop_id: id, client_name: name, phone: phone || null, service_name: svc.name, price: svc.price, duration_min: svc.duration_min, note: note || null, status: 'sorov', source: 'client', client_tg_id: user.id, at: new Date().toISOString() }) });
+    const ins = await db('queue', { method: 'POST', body: JSON.stringify({ barbershop_id: id, client_name: name, phone: phone || null, service_name: svc.name, price: svc.price, duration_min: svc.duration_min, note: note || null, status: 'sorov', source: 'client', client_tg_id: user.id, at: new Date(atMs).toISOString() }) });
     if (!ins.ok) return bad(res, 500, "So'rovni yuborib bo'lmadi");
     const [sec, ch] = await Promise.all([db('barbershop_secrets?barbershop_id=eq.' + id + '&select=bot_token'), db('bot_chats?barbershop_id=eq.' + id + '&select=chat_id')]);
     const bt = sec.data && sec.data[0] && sec.data[0].bot_token;
     if (bt) {
-      const text = `🆕 Yangi navbat so'rovi\n👤 ${name}\n✂️ ${svc.name} · ${Number(svc.price).toLocaleString('ru-RU')} so'm · ${svc.duration_min} daqiqa${note ? '\n💬 ' + note : ''}\n\nPanelda "Navbatlar" bo'limini oching.`;
+      const text = `🆕 Yangi navbat so'rovi\n👤 ${name}\n✂️ ${svc.name} · ${Number(svc.price).toLocaleString('ru-RU')} so'm · ${svc.duration_min} daqiqa\n🕒 Keladi: ${tm}${note ? '\n💬 ' + note : ''}\n\nPanelda "Navbatlar" bo'limini oching.`;
       await Promise.all((ch.data || []).map(c => tg(bt, 'sendMessage', { chat_id: c.chat_id, text })));
     }
     return res.json({ ok: true });
