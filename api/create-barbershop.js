@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   if (!me.ok) return res.status(400).json({ error: "Bot token noto'g'ri" });
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = salt + ':' + crypto.scryptSync(String(b.password), salt, 64).toString('hex');
-  const ins = await db('barbershops', { method: 'POST', body: JSON.stringify({ name: b.name, address: b.address, phone: b.phone, barber_name: b.barber, login: b.login, password_hash: hash, bot_username: me.result.username }) });
+  const ins = await db('barbershops', { method: 'POST', body: JSON.stringify({ name: b.name, address: String(b.address).trim().replace(/\s+/g, ' '), phone: b.phone, barber_name: b.barber, login: b.login, password_hash: hash, bot_username: me.result.username }) });
   if (!ins.ok) return res.status(400).json({ error: ins.status === 409 ? 'Bu login yoki bot allaqachon mavjud' : 'Bazaga yozib bo\'lmadi' });
   const shop = ins.data[0], secret = crypto.randomBytes(24).toString('hex'), h = host(req);
   const sec = await db('barbershop_secrets', { method: 'POST', body: JSON.stringify({ barbershop_id: shop.id, bot_token: token, webhook_secret: secret }) });

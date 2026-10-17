@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   if (!/^[0-9a-f-]{36}$/.test(id)) return res.status(400).json({ error: "Noto'g'ri id" });
   for (const k of ['login', 'barber', 'name', 'phone', 'address'])
     if (!b[k] || !String(b[k]).trim()) return res.status(400).json({ error: "Barcha maydonlarni to'ldiring" });
-  const patch = { name: b.name, address: b.address, phone: b.phone, barber_name: b.barber, login: String(b.login).trim().toLowerCase() };
+  const patch = { name: b.name, address: String(b.address).trim().replace(/\s+/g, ' '), phone: b.phone, barber_name: b.barber, login: String(b.login).trim().toLowerCase() };
   if (b.password) {
     if (String(b.password).length < 6) return res.status(400).json({ error: "Parol kamida 6 belgi bo'lsin" });
     const salt = crypto.randomBytes(16).toString('hex');

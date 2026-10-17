@@ -39,6 +39,7 @@ header h2{flex:1;font-size:18px}.ex{background:none;border:1px solid var(--l);bo
 dialog{background:var(--c);color:var(--t);border:1px solid var(--l);border-radius:18px;padding:20px;width:min(400px,92vw)}dialog::backdrop{background:#000a}dialog form{display:grid;gap:10px}
 details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}details p{color:var(--m);margin-top:8px;font-size:14px}
 @media(max-width:760px){aside{position:fixed;z-index:20}aside.closed{margin-left:-240px}}
+.lb{display:grid;gap:5px;font-size:13px;color:var(--m)}
 </style></head><body>
 <div id="login">
  <div style="font-size:44px">💈</div><h1><b>Xush</b> kelibsiz!</h1><div class="sub">m-barberPro · Sartarosh paneli</div>
@@ -73,18 +74,22 @@ $('#out').onclick=out;$('#bg').onclick=()=>$('#side').classList.toggle('closed')
 if(innerWidth<=760)$('#side').classList.add('closed');
 $('#nav').innerHTML=PAGES.map(p=>`<button class="nav" data-p="${p[0]}">${p[1]} ${p[2]}</button>`).join('');
 $('#nav').onclick=e=>{const b=e.target.closest('.nav');if(!b)return;page=b.dataset.p;draw();if(innerWidth<=760)$('#side').classList.add('closed')};
+const durTxt=m=>m>=60?Math.floor(m/60)+' soat'+(m%60?' '+m%60+' daqiqa':''):m+' daqiqa';
+const DUR=[10,15,20,30,40,45,60,75,90,120,150,180].map(m=>[m,durTxt(m)]);
 function openForm(title,fields,cb){const f=$('#df');
- f.innerHTML=`<b>${esc(title)}</b>`+fields.map(x=>x.opts?`<select class="fi" name="${x.k}" required>${x.opts.map(o=>`<option>${esc(o)}</option>`).join('')}</select>`:`<input class="fi" name="${x.k}" type="${x.t||'text'}" placeholder="${esc(x.l)}" ${x.r===false?'':'required'}>`).join('')+'<div class="err" id="fe"></div><div class="btns"><button class="b g">Saqlash</button><button type="button" class="b" id="fc">Bekor</button></div>';
+ f.innerHTML=`<b>${esc(title)}</b>`+fields.map(x=>`<label class="lb">${esc(x.l)}${x.opts?`<select class="fi" name="${x.k}" required>${x.opts.map(o=>{const v=Array.isArray(o)?o[0]:o,t=Array.isArray(o)?o[1]:o;return `<option value="${esc(v)}" ${String(x.v)===String(v)?'selected':''}>${esc(t)}</option>`}).join('')}</select>`:`<input class="fi" name="${x.k}" type="${x.t||'text'}" ${x.t==='number'?'min="0" inputmode="numeric"':''} value="${esc(x.v??'')}" placeholder="${esc(x.p||'')}" ${x.r===false?'':'required'}>`}</label>`).join('')+'<div class="err" id="fe"></div><div class="btns"><button class="b g">Saqlash</button><button type="button" class="b" id="fc">Bekor</button></div>';
  $('#fc').onclick=()=>$('#dlg').close();
  f.onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(f));try{await cb(v);$('#dlg').close();await load()}catch(x){$('#fe').textContent=x.message}};
  $('#dlg').showModal()}
 const add=(table,row)=>call('add',{table,row});
 const A={
  queue(){if(!D.services.length)return alert("Avval 'Xizmatlar' bo'limida xizmat qo'shing");
-  openForm('Yangi navbat',[{k:'client_name',l:'Mijoz ismi'},{k:'phone',l:'Telefon',t:'tel',r:false},{k:'service',opts:D.services.map(s=>s.name)},{k:'time',l:'Vaqt',t:'time'}],v=>{
+  openForm('Yangi navbat',[{k:'client_name',l:'Mijoz ismi'},{k:'phone',l:'Telefon',t:'tel',r:false},{k:'service',l:'Xizmat',opts:D.services.map(s=>s.name)},{k:'time',l:'Vaqt',t:'time'}],v=>{
    const s=D.services.find(x=>x.name===v.service),d=new Date(),[h,m]=v.time.split(':');d.setHours(+h,+m,0,0);
-   return add('queue',{client_name:v.client_name,phone:v.phone,service_name:s.name,price:s.price,at:d.toISOString(),status:'kutilmoqda'})})},
- service(){openForm('Yangi xizmat',[{k:'name',l:'Xizmat nomi'},{k:'price',l:"Narxi (so'm)",t:'number'},{k:'duration_min',l:'Davomiyligi (daqiqa)',t:'number'}],v=>add('services',{name:v.name,price:+v.price,duration_min:+v.duration_min}))},
+   return add('queue',{client_name:v.client_name,phone:v.phone,service_name:s.name,price:s.price,duration_min:s.duration_min,at:d.toISOString(),status:'kutilmoqda',source:'barber'})})},
+ service(id){const s=id?D.services.find(x=>x.id===id):null;
+  openForm(s?'Xizmatni tahrirlash':'Yangi xizmat',[{k:'name',l:'Xizmat nomi',p:'Masalan: Soch olish',v:s&&s.name},{k:'price',l:"Narxi (so'm)",t:'number',p:'50000',v:s&&s.price},{k:'duration_min',l:'Bajarilish vaqti',opts:DUR,v:s?s.duration_min:30}],
+   v=>{const row={name:v.name.trim(),price:+v.price,duration_min:+v.duration_min};return s?call('update',{table:'services',id:s.id,row}):add('services',row)})},
  tx(type){openForm(type==='kirim'?'Yangi kirim':'Yangi chiqim',[{k:'amount',l:"Summa (so'm)",t:'number'},{k:'note',l:'Izoh',r:false}],v=>add('transactions',{type,amount:+v.amount,note:v.note}))},
  async st(id,st){const q=D.queue.find(x=>x.id===id);await call('update',{table:'queue',id,row:{status:st}});
   if(st==='tugadi'&&q)await add('transactions',{type:'kirim',amount:q.price,note:'Navbat: '+q.client_name});await load()},
@@ -95,12 +100,15 @@ const sum=(t,f)=>D.transactions.filter(x=>x.type===t&&f(x.created_at)).reduce((s
 const W=(l,v,c='')=>`<div class="card w"><small>${l}</small><div class="v ${c}">${v}</div></div>`;
 const V={
  dash(){const tq=D.queue.filter(q=>today(q.at)),wait=tq.filter(q=>q.status==='kutilmoqda').sort((a,b)=>new Date(a.at)-new Date(b.at)),inc=sum('kirim',today),ex=sum('chiqim',today);
-  return `<div class="grid">${W('Navbatdagilar',wait.length)}${W('Bugun tugatilgan',tq.filter(q=>q.status==='tugadi').length)}${W('Kunlik tushum',money(inc),'ok')}${W('Kunlik chiqim',money(ex),'bad')}${W('Sof foyda',money(inc-ex),'gd')}${W('Xizmatlar soni',D.services.length)}</div>
+  return `<div class="grid">${W('Navbatdagilar',wait.length)}${W('Bugun tugatilgan',tq.filter(q=>q.status==='tugadi').length)}${W('Kunlik tushum',money(inc),'ok')}${W('Kunlik chiqim',money(ex),'bad')}${W('Sof foyda',money(inc-ex),'gd')}${W("Yangi so'rovlar",D.queue.filter(q=>q.status==='sorov').length,'gd')}${W('Xizmatlar soni',D.services.length)}</div>
   <div class="card"><small class="mu">Keyingi mijoz</small><div style="margin-top:6px;font-size:18px">${wait[0]?`<b>${esc(wait[0].client_name)}</b> · ${hm(wait[0].at)} · ${esc(wait[0].service_name)}`:"Hozircha navbat yo'q"}</div></div>
   <div class="card"><b>Tezkor amallar</b><div class="btns" style="margin-top:10px"><button class="b g" data-a="queue">➕ Navbat</button><button class="b" data-a="tx|kirim">💵 Kirim</button><button class="b" data-a="tx|chiqim">🧾 Chiqim</button><button class="b" data-a="service">✂️ Xizmat</button></div></div>`},
- queue(){const L=D.queue.filter(q=>today(q.at)).sort((a,b)=>new Date(a.at)-new Date(b.at)),C={kutilmoqda:'⏳',jarayonda:'✂️',tugadi:'✅',bekor:'❌'};
-  return `<div><button class="b g" data-a="queue">➕ Yangi navbat</button></div><div class="card">${L.length?L.map(q=>`<div class="row"><div><b>${C[q.status]||''} ${esc(q.client_name)}</b><div class="mu">${hm(q.at)} · ${esc(q.service_name)} · ${money(q.price)}${q.phone?' · '+esc(q.phone):''}</div></div><div class="btns">${q.status==='kutilmoqda'?`<button class="b s" data-a="st|${q.id}|jarayonda">Boshlash</button>`:''}${q.status==='kutilmoqda'||q.status==='jarayonda'?`<button class="b s" data-a="st|${q.id}|tugadi">Tugadi</button><button class="b s" data-a="st|${q.id}|bekor">Bekor</button>`:`<button class="b s" data-a="del|queue|${q.id}">🗑</button>`}</div></div>`).join(''):'<div class="mu">Bugun navbat yo\'q</div>'}</div>`},
- services(){return `<div><button class="b g" data-a="service">➕ Xizmat qo'shish</button></div><div class="card">${D.services.length?D.services.map(s=>`<div class="row"><div><b>${esc(s.name)}</b><div class="mu">${s.duration_min} daqiqa</div></div><div class="btns"><span class="gd">${money(s.price)}</span><button class="b s" data-a="del|services|${s.id}">🗑</button></div></div>`).join(''):'<div class="mu">Hali xizmat yo\'q</div>'}</div>`},
+ queue(){const R=D.queue.filter(q=>q.status==='sorov').sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)),
+  L=D.queue.filter(q=>q.status!=='sorov'&&today(q.at)).sort((a,b)=>new Date(a.at)-new Date(b.at)),C={kutilmoqda:'⏳',jarayonda:'✂️',tugadi:'✅',bekor:'❌'};
+  return `<div><button class="b g" data-a="queue">➕ Yangi navbat</button></div>
+  ${R.length?`<div class="card" style="border-color:var(--g)"><b>🆕 Yangi so'rovlar (${R.length})</b>${R.map(q=>`<div class="row"><div><b>${esc(q.client_name)}</b><div class="mu">${esc(q.service_name)} · ${durTxt(q.duration_min||30)} · ${money(q.price)}${q.phone?' · '+esc(q.phone):''}</div>${q.note?`<div class="mu">💬 ${esc(q.note)}</div>`:''}</div><div class="btns"><button class="b s g" data-a="st|${q.id}|kutilmoqda">✔ Qabul</button><button class="b s" data-a="st|${q.id}|bekor">✖ Rad</button></div></div>`).join('')}</div>`:''}
+  <div class="card">${L.length?L.map(q=>`<div class="row"><div><b>${C[q.status]||''} ${esc(q.client_name)}</b><div class="mu">${hm(q.at)} · ${esc(q.service_name)} · ${money(q.price)}${q.phone?' · '+esc(q.phone):''}</div>${q.note?`<div class="mu">💬 ${esc(q.note)}</div>`:''}</div><div class="btns">${q.status==='kutilmoqda'?`<button class="b s" data-a="st|${q.id}|jarayonda">Boshlash</button>`:''}${q.status==='kutilmoqda'||q.status==='jarayonda'?`<button class="b s" data-a="st|${q.id}|tugadi">Tugadi</button><button class="b s" data-a="st|${q.id}|bekor">Bekor</button>`:`<button class="b s" data-a="del|queue|${q.id}">🗑</button>`}</div></div>`).join(''):'<div class="mu">Bugun navbat yo\'q</div>'}</div>`},
+ services(){return `<div><button class="b g" data-a="service">➕ Xizmat qo'shish</button></div><div class="card">${D.services.length?D.services.map(s=>`<div class="row"><div><b>${esc(s.name)}</b><div class="mu">⏱ ${durTxt(s.duration_min)}</div></div><div class="btns"><span class="gd" style="font-weight:700">${money(s.price)}</span><button class="b s" data-a="service|${s.id}">✏️</button><button class="b s" data-a="del|services|${s.id}">🗑</button></div></div>`).join(''):'<div class="mu">Hali xizmat yo\'q. Mijozlar navbat olishi uchun xizmat qo\'shing.</div>'}</div>`},
  stats(){const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d}),vals=days.map(d=>sum('kirim',x=>day(x)===day(d))),mx=Math.max(...vals,1),
   done=D.queue.filter(q=>q.status==='tugadi'),cnt={};done.forEach(q=>cnt[q.service_name]=(cnt[q.service_name]||0)+1);const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5);
   return `<div class="card"><b>So'nggi 7 kun tushumi</b><div class="bars" style="margin-top:14px">${vals.map((v,i)=>`<div><i style="height:${v/mx*100}%"></i>${days[i].getDate()}</div>`).join('')}</div></div>

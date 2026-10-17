@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BarberPro 017</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a18;--c:#15152b;--c2:#1d1d3a;--l:#2c2c50;--t:#f5f5fb;--m:#9a9ac0;--g:#f2c66d;--v:#7c5cff;--p:#ff6fb1;--ok:#3ddc97;--bad:#ff6b6b}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,textarea{font:inherit;color:inherit}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(circle at 12% 8%,#2d2070 0,transparent 46%),radial-gradient(circle at 92% 88%,#5c2a55 0,transparent 46%),var(--bg)}
+.bg::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ffffff07 0 14px,transparent 14px 44px)}
+.bg i{position:absolute;font-style:normal;opacity:.09;font-size:60px;animation:fl 9s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-16px) rotate(8deg)}}
+.scr{display:none;max-width:480px;margin:auto;padding:20px 16px 40px;animation:in .4s ease}.scr.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.serif{font-family:'Playfair Display',Georgia,serif}
+#sWelcome{min-height:100vh;text-align:center;flex-direction:column;justify-content:center;align-items:center}
+#sWelcome.on{display:flex}
+.logo{filter:drop-shadow(0 8px 30px #7c5cff88);animation:fl 6s ease-in-out infinite}
+.hi{color:var(--m);letter-spacing:.25em;text-transform:uppercase;font-size:12px;margin-top:22px}
+h1.serif{font-size:44px;line-height:1.1;margin:8px 0 12px;background:linear-gradient(120deg,var(--g),var(--p) 55%,var(--v));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--m);max-width:290px;line-height:1.5;margin-bottom:30px}
+.cta{width:100%;max-width:340px;border:0;border-radius:16px;padding:16px;font-weight:700;font-size:16px;cursor:pointer;color:#1a1204;background:linear-gradient(135deg,#f6d27f,#f2c66d 50%,#ffb36b);box-shadow:0 10px 30px #f2c66d44;transition:transform .15s}
+.cta:active{transform:scale(.98)}.cta:disabled{opacity:.4;box-shadow:none}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{background:var(--c);border:1px solid var(--l);border-radius:12px;width:40px;height:40px;cursor:pointer;font-size:18px}
+h2.serif{font-size:26px}.sub{color:var(--m);font-size:14px;margin:-8px 0 16px}
+.reg{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:linear-gradient(135deg,var(--c2),var(--c));border:1px solid var(--l);border-radius:18px;padding:16px;margin-bottom:10px;cursor:pointer}
+.reg b{display:block;font-size:17px}.reg small{color:var(--m)}.pin{font-size:24px}.ar{margin-left:auto;font-size:24px;color:var(--g)}
+.shop{display:flex;justify-content:space-between;align-items:stretch;gap:12px;width:100%;text-align:left;background:linear-gradient(135deg,var(--c2),var(--c));border:1px solid var(--l);border-radius:20px;padding:16px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden}
+.shop::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(#7c5cff55,transparent 70%)}
+.sh1{display:grid;gap:5px;align-content:center;min-width:0}.sh1 b{font-size:18px}.sh1 span{color:var(--m);font-size:14px}
+.q{text-align:center;background:#0d0d20;border:1px solid var(--l);border-radius:16px;padding:10px 14px;display:grid;align-content:center;gap:4px;min-width:104px;z-index:1}
+.qn{font-family:'Playfair Display',serif;font-size:34px;font-weight:800;color:var(--g);line-height:1}.qn small{display:block;font-family:Inter;font-size:11px;font-weight:500;color:var(--m);margin-top:2px}
+.qt{font-size:12px;color:var(--ok);font-weight:600}
+.who{background:linear-gradient(135deg,#2a2060,#3b1f4f);border:1px solid var(--l);border-radius:20px;padding:18px;margin-bottom:16px}
+.who small{color:var(--g);letter-spacing:.12em;text-transform:uppercase;font-size:11px}.who h2{margin:4px 0 8px;font-size:28px}
+.who a{color:var(--t);text-decoration:none;background:#ffffff18;border-radius:12px;padding:8px 14px;display:inline-block}
+.lb{display:block;color:var(--m);font-size:13px;margin:16px 0 8px}
+.sv{max-height:270px;overflow-y:auto;display:grid;gap:8px;padding-right:4px}
+.svc{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--c);border:1.5px solid var(--l);border-radius:14px;padding:13px 14px;cursor:pointer}
+.svc.on{border-color:var(--g);background:linear-gradient(135deg,#3a2f14,var(--c))}
+.svc b{display:block}.svc small{color:var(--m)}.svc .pr{color:var(--g);font-weight:700;white-space:nowrap}
+textarea,input.in{width:100%;background:var(--c);border:1px solid var(--l);border-radius:14px;padding:13px;outline:0;resize:none}
+textarea:focus,input.in:focus{border-color:var(--v)}
+.mu{color:var(--m)}.err{color:var(--bad);text-align:center;margin:10px 0;font-size:14px}.empty{text-align:center;color:var(--m);padding:40px 10px}
+#sDone{text-align:center;padding-top:18vh}.ok{font-size:70px}
+</style></head><body>
+<div class="bg"><i style="left:6%;top:12%">✂️</i><i style="right:8%;top:22%;animation-delay:-3s">💈</i><i style="left:12%;top:58%;animation-delay:-5s">🪒</i><i style="right:14%;top:70%;animation-delay:-2s">✂️</i><i style="left:46%;top:86%;animation-delay:-6s">💈</i></div>
+
+<section class="scr on" id="sWelcome">
+ <svg class="logo" viewBox="0 0 120 120" width="116" height="116"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#ff6fb1"/></linearGradient><clipPath id="cp"><rect x="46" y="28" width="28" height="64" rx="10"/></clipPath></defs>
+  <circle cx="60" cy="60" r="56" fill="url(#lg)" opacity=".2"/><circle cx="60" cy="60" r="56" fill="none" stroke="url(#lg)" stroke-width="2"/>
+  <rect x="46" y="28" width="28" height="64" rx="10" fill="#fff"/><g clip-path="url(#cp)" fill="#7c5cff"><polygon points="40,30 80,46 80,58 40,42"/><polygon points="40,54 80,70 80,82 40,66"/><polygon points="40,78 80,94 80,106 40,90"/></g>
+  <circle cx="60" cy="22" r="6" fill="#f2c66d"/><rect x="50" y="92" width="20" height="8" rx="3" fill="#f2c66d"/></svg>
+ <div class="hi">Xush kelibsiz<span id="hello"></span></div>
+ <h1 class="serif">BarberPro 017</h1>
+ <p class="lead">Yaqin atrofdagi eng yaxshi sartaroshlar va onlayn navbat bir joyda</p>
+ <button class="cta" id="start">Davom etish →</button>
+</section>
+
+<section class="scr" id="sRegion">
+ <div class="top"><button class="back" data-b="sWelcome">‹</button><h2 class="serif">Hududni tanlang</h2></div>
+ <div class="sub">Qaysi hududdagi sartaroshni qidiryapsiz?</div><div id="regList"></div>
+</section>
+
+<section class="scr" id="sShops">
+ <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" id="rTitle"></h2></div>
+ <div class="sub">Sartaroshni tanlang</div><div id="shopList"></div>
+</section>
+
+<section class="scr" id="sShop">
+ <div class="top"><button class="back" data-b="sShops">‹</button><h2 class="serif" id="dShop"></h2></div>
+ <div class="who"><small>Sartarosh</small><h2 class="serif" id="dName"></h2><a id="dPhone" href="#"></a></div>
+ <label class="lb">Xizmatni tanlang</label><div class="sv" id="svcList"></div>
+ <label class="lb">Izoh (ixtiyoriy)</label><textarea id="note" rows="3" maxlength="300" placeholder="Masalan: soqolni ham tuzating"></textarea>
+ <label class="lb">Telefon raqamingiz (ixtiyoriy)</label><input class="in" id="cphone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __">
+ <div class="err" id="be"></div>
+ <button class="cta" id="book" style="max-width:none;margin-top:8px" disabled>Navbatga yozilish</button>
+</section>
+
+<section class="scr" id="sDone">
+ <div class="ok">✅</div><h2 class="serif" style="margin:14px 0 8px">So'rov yuborildi!</h2>
+ <p class="mu" style="margin-bottom:26px;line-height:1.5">Sartarosh tasdiqlashi bilan sizga navbat belgilanadi.</p>
+ <button class="cta" id="again">Sartaroshlar ro'yxati</button>
+</section>
+
+<script>
+const $=s=>document.querySelector(s);
+const tg=window.Telegram&&Telegram.WebApp;
+if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#0a0a18');tg.setBackgroundColor('#0a0a18')}catch(e){}}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
+const dur=m=>m>=60?Math.floor(m/60)+' soat'+(m%60?' '+m%60+' daqiqa':''):m+' daqiqa';
+const u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.first_name)$('#hello').textContent=', '+u.first_name;
+async function api(action,o={}){const r=await fetch('/api/client',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,initData:tg?tg.initData:'',...o})});
+ const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Xatolik');return j}
+let shops=[],region=null,cur=null,svc=null;
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
+document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>go(b.dataset.b));
+async function loadShops(){$('#regList').innerHTML='<div class="empty">Yuklanmoqda...</div>';
+ try{shops=(await api('shops')).shops;drawRegions()}catch(e){$('#regList').innerHTML='<div class="err">'+esc(e.message)+'</div>'}}
+$('#start').onclick=()=>{go('sRegion');loadShops()};
+function drawRegions(){const m=new Map();shops.forEach(s=>{const r=(s.region||'').trim(),k=r.toLowerCase();if(!k)return;if(!m.has(k))m.set(k,{n:r,c:0});m.get(k).c++});
+ $('#regList').innerHTML=m.size?[...m].map(([k,v])=>`<button class="reg" data-k="${esc(k)}"><span class="pin">📍</span><span><b>${esc(v.n)}</b><small>${v.c} ta sartaroshxona</small></span><span class="ar">›</span></button>`).join(''):'<div class="empty">Hozircha sartaroshxonalar yo\'q</div>'}
+$('#regList').onclick=e=>{const b=e.target.closest('.reg');if(!b)return;region=b.dataset.k;drawShops();go('sShops')};
+const wait=m=>m<=0?"Kutish yo'q":'~'+dur(m);
+function drawShops(){const L=shops.filter(s=>(s.region||'').trim().toLowerCase()===region);$('#rTitle').textContent=L[0]?L[0].region.trim():'';
+ $('#shopList').innerHTML=L.map(s=>`<button class="shop" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
+$('#shopList').onclick=async e=>{const b=e.target.closest('.shop');if(!b)return;cur=shops.find(s=>s.id===b.dataset.id);svc=null;
+ $('#dShop').textContent=cur.name;$('#dName').textContent=cur.barber;$('#dPhone').textContent='📞 '+cur.phone;$('#dPhone').href='tel:'+String(cur.phone).replace(/[^+\d]/g,'');
+ $('#note').value='';$('#cphone').value='';$('#be').textContent='';$('#book').disabled=true;$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
+ try{const r=await api('shop',{id:cur.id});
+  $('#svcList').innerHTML=r.services.length?r.services.map(x=>`<button class="svc" data-id="${esc(x.id)}"><span><b>${esc(x.name)}</b><small>⏱ ${dur(x.duration_min)}</small></span><span class="pr">${money(x.price)}</span></button>`).join(''):'<div class="mu">Sartarosh hali xizmat qo\'shmagan</div>'}
+ catch(x){$('#svcList').innerHTML='<div class="err">'+esc(x.message)+'</div>'}};
+$('#svcList').onclick=e=>{const b=e.target.closest('.svc');if(!b)return;svc=b.dataset.id;document.querySelectorAll('.svc').forEach(x=>x.classList.toggle('on',x===b));$('#book').disabled=false};
+function maskPhone(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||v.trim().startsWith('998'))d=d.slice(3);d=d.slice(0,9);
+ const p=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);return p.length?'+998 '+p.join(' '):'+998'}
+const cp=$('#cphone');cp.addEventListener('focus',()=>{if(!cp.value)cp.value='+998 '});cp.addEventListener('input',()=>{cp.value=maskPhone(cp.value)});cp.addEventListener('blur',()=>{if(cp.value.trim()==='+998')cp.value=''});
+$('#book').onclick=async()=>{const b=$('#book');b.disabled=true;b.textContent='Yuborilmoqda...';$('#be').textContent='';
+ try{await api('book',{id:cur.id,service:svc,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sDone')}
+ catch(x){$('#be').textContent=x.message;b.disabled=false}b.textContent='Navbatga yozilish'};
+$('#again').onclick=async()=>{go('sShops');try{shops=(await api('shops')).shops;drawShops()}catch(e){}};
+</script></body></html>

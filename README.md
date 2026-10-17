@@ -21,3 +21,8 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 
 ## Admin yangilanishi
 - SQL Editor: `supabase/04_admin_update.sql` ni ishga tushiring.
+
+## Mijoz boti
+- SQL Editor: `supabase/05_client_bot.sql` ni ishga tushiring.
+- Admin saytda Client bot bo'limiga BotFather tokenini kiriting.
+- Mijoz ilovasi: `/client/`
