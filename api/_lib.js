@@ -46,4 +46,29 @@ function verifyInit(initData, token, maxAge = 86400) {
   if (Date.now() / 1000 - Number(p.get('auth_date')) > maxAge) return null;
   try { return JSON.parse(p.get('user')); } catch (e) { return null; }
 }
-module.exports = { crypto, admin, db, tg, host, sweep, verifyInit, dayStartISO };
+const ADMIN_CODE = process.env.ADMIN_AGENT_CODE || 'zdrrgb12';
+const eq = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); };
+const asign = p => crypto.createHmac('sha256', SK).update('agent:' + p).digest('base64url');
+const mkAgent = id => { const p = Buffer.from(JSON.stringify({ a: id, exp: Date.now() + 12 * 3600e3 })).toString('base64url'); return p + '.' + asign(p); };
+function verAgent(t) {
+  const [p, s] = String(t || '').split('.'); if (!p || !s) return null;
+  if (!eq(asign(p), s)) return null;
+  try { const o = JSON.parse(Buffer.from(p, 'base64url')); return o.exp > Date.now() ? o : null; } catch (e) { return null; }
+}
+// Admin (Supabase JWT, 3 qism) yoki agent (o'z tokeni, 2 qism). Agent hech qachon admin huquqini olmaydi.
+async function who(req) {
+  const t = (req.headers.authorization || '').replace('Bearer ', '');
+  if (!t) return null;
+  if (t.split('.').length === 2) {
+    const o = verAgent(t); if (!o || !/^[0-9a-f-]{36}$/.test(String(o.a))) return null;
+    const r = await db('agents?id=eq.' + o.a + '&select=id,login,agent_code');
+    return r.data && r.data[0] ? { role: 'agent', agent: r.data[0] } : null;
+  }
+  return (await admin(req)) ? { role: 'admin' } : null;
+}
+function hashPw(pw) { const salt = crypto.randomBytes(16).toString('hex'); return salt + ':' + crypto.scryptSync(String(pw), salt, 64).toString('hex'); }
+function checkPw(pw, stored) {
+  const [salt, h] = String(stored || ':').split(':'), x = crypto.scryptSync(String(pw), salt || 'x', 64);
+  return !!h && h.length === x.length * 2 && crypto.timingSafeEqual(x, Buffer.from(h, 'hex'));
+}
+module.exports = { crypto, admin, db, tg, host, sweep, verifyInit, dayStartISO, ADMIN_CODE, eq, mkAgent, who, hashPw, checkPw };

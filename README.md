@@ -33,3 +33,8 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 ## Xavfsizlik yangilanishi
 - SQL Editor: `supabase/07_security.sql` ni ishga tushiring.
 - Har bir sartarosh `/start` ni o'z botida bir marta bosishi kerak (yangi ilova havolasi shunda o'rnatiladi).
+
+## Sale agents
+- SQL Editor: `supabase/08_sale_agents.sql` ni ishga tushiring.
+- Admin saytda Sale agents bo'limidan agent qo'shiladi (login, parol, agent code).
+- `favicon.svg` — sayt tabidagi belgi.

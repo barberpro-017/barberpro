@@ -1,9 +1,14 @@
-const { crypto, admin, db, tg, host } = require('./_lib');
+const { crypto, db, tg, host, who } = require('./_lib');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
-  if (!(await admin(req))) return res.status(401).json({ error: "Ruxsat yo'q" });
+  const w = await who(req);
+  if (!w) return res.status(401).json({ error: "Ruxsat yo'q" });
   const b = req.body || {}, id = String(b.id || '');
   if (!/^[0-9a-f-]{36}$/.test(id)) return res.status(400).json({ error: "Noto'g'ri id" });
+  if (w.role === 'agent') {
+    const o = await db('barbershops?id=eq.' + id + '&select=agent_id');
+    if (!o.data || !o.data[0] || o.data[0].agent_id !== w.agent.id) return res.status(403).json({ error: "Ruxsat yo'q" });
+  }
   for (const k of ['login', 'barber', 'name', 'phone', 'address'])
     if (!b[k] || !String(b[k]).trim()) return res.status(400).json({ error: "Barcha maydonlarni to'ldiring" });
   const patch = { name: b.name, address: String(b.address).trim().replace(/\s+/g, ' '), phone: b.phone, barber_name: b.barber, login: String(b.login).trim().toLowerCase() };

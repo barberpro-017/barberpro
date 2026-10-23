@@ -1,8 +1,10 @@
-const { crypto, admin, db, tg, host } = require('./_lib');
+const { crypto, db, tg, host, who } = require('./_lib');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
-  if (!(await admin(req))) return res.status(401).json({ error: "Ruxsat yo'q" });
+  const w = await who(req);
+  if (!w) return res.status(401).json({ error: "Ruxsat yo'q" });
   const b = req.body || {};
+  if (w.role !== 'admin' && b.action !== 'status') return res.status(403).json({ error: "Ruxsat yo'q" });
   const cur = await db('client_bot?id=eq.1&select=bot_token,bot_username');
   const row = cur.data && cur.data[0];
   if (b.action === 'status') {
