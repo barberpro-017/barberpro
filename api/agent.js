@@ -44,5 +44,10 @@ module.exports = async (req, res) => {
       db(`payments?barbershop_id=in.(${ids})&select=amount,plan,paid_at&limit=5000`)]);
     return res.json({ shops, queue: q.data || [], tx: t.data || [], payments: p.data || [] });
   }
+  if (b.action === 'store') {
+    const [pr, o] = await Promise.all([db('products?select=id,name,price,image_url&order=created_at.desc'),
+      ids ? db(`orders?barbershop_id=in.(${ids})&select=id,barbershop_id,items,total,status,delivery_at,created_at&order=created_at.desc&limit=300`) : { data: [] }]);
+    return res.json({ shops: shops.map(x => ({ id: x.id, name: x.name, address: x.address })), orders: o.data || [], products: pr.data || [] });
+  }
   bad(res, 400, "Noto'g'ri so'rov");
 };

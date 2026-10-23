@@ -49,6 +49,38 @@ module.exports = async (req, res) => {
     await db('barbershops?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ is_open: !!b.value }) });
     return res.json({ ok: true });
   }
+  if (b.action === 'products') {
+    const r = await db('products?select=id,name,price,image_url&order=created_at.desc');
+    return res.json({ products: r.data || [] });
+  }
+  if (b.action === 'orders') {
+    const r = await db(`orders?barbershop_id=eq.${id}&select=id,items,total,status,delivery_at,created_at&order=created_at.desc&limit=30`);
+    return res.json({ orders: r.data || [] });
+  }
+  if (b.action === 'order') {
+    const items = Array.isArray(b.items) ? b.items.slice(0, 60) : [];
+    if (!items.length) return bad(res, 400, "Savat bo'sh");
+    const ids = [...new Set(items.map(i => String(i.id)))];
+    if (ids.some(x => !UUID.test(x))) return bad(res, 400, "Noto'g'ri mahsulot");
+    const open = await db(`orders?barbershop_id=eq.${id}&status=eq.yangi&select=id`);
+    if (open.data && open.data.length >= 10) return bad(res, 429, "Kutilayotgan buyurtmalar ko'p, admin javobini kuting");
+    const pr = await db(`products?id=in.(${ids.join(',')})&select=id,name,price`), P = Object.fromEntries((pr.data || []).map(x => [x.id, x]));
+    const lines = {}; let total = 0;
+    for (const it of items) {
+      const q = Math.floor(Number(it.qty)), p = P[String(it.id)];
+      if (!p || !(q >= 1 && q <= 999)) return bad(res, 400, "Mahsulot yoki miqdor noto'g'ri");
+      lines[p.id] = lines[p.id] || { id: p.id, name: p.name, price: Number(p.price), qty: 0 };
+      lines[p.id].qty += q; total += Number(p.price) * q;
+    }
+    const ins = await db('orders', { method: 'POST', body: JSON.stringify({ barbershop_id: id, items: Object.values(lines), total }) });
+    return ins.ok ? res.json({ ok: true }) : bad(res, 500, "Buyurtmani yuborib bo'lmadi");
+  }
+  if (b.action === 'ocancel') {
+    const oid = String(b.order || '');
+    if (!UUID.test(oid)) return bad(res, 400, "Noto'g'ri id");
+    await db(`orders?id=eq.${oid}&barbershop_id=eq.${id}&status=eq.yangi`, { method: 'PATCH', body: JSON.stringify({ status: 'bekor' }) });
+    return res.json({ ok: true });
+  }
   if (!TABLES[b.table]) return bad(res, 400, "Noto'g'ri so'rov");
   const tb = b.table, uid = String(b.id || '');
   const clean = o => { const r = { ...(o || {}) }; delete r.id; delete r.barbershop_id; delete r.created_at; return r; };

@@ -53,6 +53,11 @@ details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}d
 #xdlg{width:min(600px,94vw);max-height:90vh;overflow:auto}
 .plan b{font-size:18px}.cn{font-size:26px;font-weight:800;letter-spacing:.06em;margin:10px 0;color:var(--g)}
 .lk{color:var(--g);text-decoration:none;font-weight:600}
+.pg{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.pc{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:10px;display:grid;gap:6px;align-content:start}
+.pi{width:100%;aspect-ratio:1;border-radius:12px;background:var(--bg);display:grid;place-items:center;font-size:38px;overflow:hidden}.pi img{width:100%;height:100%;object-fit:cover}
+.stp{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cartbar{position:sticky;bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#1d1f33;border:1px solid var(--g);border-radius:16px;padding:12px 14px;box-shadow:0 8px 30px #000a}
 </style></head><body>
 <div id="login">
  <div style="font-size:44px">💈</div><h1><b>Xush</b> kelibsiz!</h1><div class="sub">m-barberPro · Sartarosh paneli</div>
@@ -73,7 +78,7 @@ const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
 const day=d=>new Date(d).toDateString(),today=d=>day(d)===day(new Date());
 const hm=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
 ls.d('bt');let token=null,shop={},D={services:[],queue:[],transactions:[]},page='dash';
-const PAGES=[['dash','📊','Dashboard'],['queue','🕒','Navbatlar'],['services','✂️','Xizmatlar'],['stats','📈','Analitika'],['cash','💰','Kirim va Chiqim'],['sub','⭐','Obuna'],['help','❓','Yordam']];
+const PAGES=[['dash','📊','Dashboard'],['queue','🕒','Navbatlar'],['services','✂️','Xizmatlar'],['stats','📈','Analitika'],['cash','💰','Kirim va Chiqim'],['store','🛍️','Magazin'],['sub','⭐','Obuna'],['help','❓','Yordam']];
 async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,token,shop:SHOP,initData:tg?tg.initData:'',...o})});
  const j=await r.json().catch(()=>({}));if(r.status===401&&action!=='login'){out();throw new Error('Qayta kiring')}if(!r.ok)throw new Error(j.error||'Xatolik');return j}
 async function load(){const [s,a,b,c]=await Promise.all([call('shop'),...['services','queue','transactions'].map(t=>call('list',{table:t}))]);
@@ -89,7 +94,7 @@ $('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';
 $('#out').onclick=out;$('#bg').onclick=()=>$('#side').classList.toggle('closed');
 if(innerWidth<=760)$('#side').classList.add('closed');
 $('#nav').innerHTML=PAGES.map(p=>`<button class="nav" data-p="${p[0]}">${p[1]} ${p[2]}</button>`).join('');
-$('#nav').onclick=e=>{const b=e.target.closest('.nav');if(!b)return;page=b.dataset.p;draw();if(innerWidth<=760)$('#side').classList.add('closed')};
+$('#nav').onclick=e=>{const b=e.target.closest('.nav');if(!b)return;page=b.dataset.p;draw();if(page==='store')loadStore();if(innerWidth<=760)$('#side').classList.add('closed')};
 const durTxt=m=>m>=60?Math.floor(m/60)+' soat'+(m%60?' '+m%60+' daqiqa':''):m+' daqiqa';
 const DUR=[10,15,20,30,40,45,60,75,90,120,150,180].map(m=>[m,durTxt(m)]);
 function openForm(title,fields,cb){const f=$('#df');
@@ -100,6 +105,16 @@ function openForm(title,fields,cb){const f=$('#df');
 const add=(table,row)=>call('add',{table,row});
 const A={
  per(x){per=+x;draw()},
+ tab(x){stTab=x;draw();if(x==='o')loadStore()},
+ async stref(){await loadStore()},
+ inc(id){cart[id]=Math.min((cart[id]||0)+1,99);draw()},
+ dec(id){if(cart[id]>1)cart[id]--;else delete cart[id];draw()},
+ cart(){showCart()},
+ cinc(id){cart[id]=Math.min((cart[id]||0)+1,99);showCart();draw()},
+ cdec(id){if(cart[id]>1)cart[id]--;else delete cart[id];showCart();draw()},
+ cclear(){cart={};$('#xdlg').close();draw()},
+ async order(){const items=Object.entries(cart).map(([id,qty])=>({id,qty}));if(!items.length)return;await call('order',{items});cart={};$('#xdlg').close();stTab='o';await loadStore();alert('Buyurtma yuborildi ✅')},
+ async ocancel(id){if(!confirm('Buyurtma bekor qilinsinmi?'))return;await call('ocancel',{order:id});await loadStore()},
  async open(v){await call('setopen',{value:v==='1'});shop.is_open=v==='1';draw()},
  async refresh(){await load()},
  wd(k){const w=WDG[k];if(!w)return;if(xchart){xchart.destroy();xchart=null}
@@ -122,6 +137,7 @@ const A={
 $('#xc').onclick=()=>$('#xdlg').close();
 $('#xdlg').addEventListener('close',()=>{if(xchart){xchart.destroy();xchart=null}});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-tg]');if(a){e.preventDefault();if(tg&&tg.openTelegramLink)tg.openTelegramLink(a.href);else window.open(a.href,'_blank')}});
+setInterval(()=>{if(token&&page==='store'&&stTab==='o'&&!document.hidden&&!document.querySelector('dialog[open]'))loadStore().catch(()=>{})},60000);
 setInterval(()=>{if(token&&page==='queue'&&!document.hidden&&!document.querySelector('dialog[open]'))load().catch(()=>{})},60000);
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const [a,x,y]=b.dataset.a.split('|');try{await A[a](x,y)}catch(err){alert(err.message)}});
 const sum=(t,f)=>D.transactions.filter(x=>x.type===t&&f(x.created_at)).reduce((s,x)=>s+Number(x.amount),0);
@@ -143,6 +159,11 @@ const V={
   return `<div class="card bal"><small>💰 Balans</small><div class="bv ${sum('kirim',()=>true)-sum('chiqim',()=>true)<0?'bad':''}">${money(sum('kirim',()=>true)-sum('chiqim',()=>true))}</div><div class="mu">Jami kirim ${money(sum('kirim',()=>true))} · Jami chiqim ${money(sum('chiqim',()=>true))}</div></div><div class="grid">${W('Bugungi kirim',money(sum('kirim',today)),'ok')}${W('Bugungi chiqim',money(sum('chiqim',today)),'bad')}${W('Oylik kirim',money(sum('kirim',mo)),'ok')}${W('Oylik chiqim',money(sum('chiqim',mo)),'bad')}</div>
   <div class="btns"><button class="b g" data-a="tx|kirim">💵 Kirim</button><button class="b" data-a="tx|chiqim">🧾 Chiqim</button></div>
   <div class="card">${D.transactions.length?D.transactions.slice(0,60).map(x=>`<div class="row"><div><b class="${x.type==='kirim'?'ok':'bad'}">${x.type==='kirim'?'+':'−'} ${money(x.amount)}</b><div class="mu">${esc(x.note||'')} · ${new Date(x.created_at).toLocaleDateString('uz')}</div></div><button class="b s" data-a="del|transactions|${x.id}">🗑</button></div>`).join(''):'<div class="mu">Yozuvlar yo\'q</div>'}</div>`},
+ store(){const n=Object.values(cart).reduce((a,b)=>a+b,0),tot=PROD.reduce((s,p)=>s+(cart[p.id]||0)*Number(p.price),0),act=ORD.filter(o=>o.status==='yangi'||o.status==='yetkazilmoqda').length;
+  const tabs=`<div class="btns"><button class="b ${stTab==='p'?'g':''}" data-a="tab|p">🛍️ Mahsulotlar</button><button class="b ${stTab==='o'?'g':''}" data-a="tab|o">📦 Buyurtmalarim${act?' ('+act+')':''}</button><button class="b" data-a="stref" title="Yangilash">🔄</button></div>`;
+  if(stTab==='o')return tabs+(ORD.length?ORD.map(o=>`<div class="card"><div class="row" style="border:0;padding:0"><b>${fdtB(o.created_at)}</b><span class="tag">${OSTB[o.status]||''}</span></div><div class="mu" style="margin:6px 0">${o.items.map(i=>esc(i.name)+' × '+i.qty).join(', ')}</div><div class="gd" style="font-weight:700">${money(o.total)}</div><div class="mu" style="margin-top:6px">${etaTxt(o)}</div>${o.status==='yangi'?`<div style="margin-top:8px"><button class="b s" data-a="ocancel|${o.id}">Bekor qilish</button></div>`:''}</div>`).join(''):'<div class="card mu">Hali buyurtma bermagansiz</div>');
+  return tabs+(PROD.length?`<div class="pg">${PROD.map(p=>`<div class="pc"><div class="pi">${p.image_url?`<img loading="lazy" src="${esc(p.image_url)}" alt="">`:'🧴'}</div><b>${esc(p.name)}</b><div class="gd" style="font-weight:700">${money(p.price)}</div>${cart[p.id]?`<div class="stp"><button class="b s" data-a="dec|${p.id}">−</button><b>${cart[p.id]}</b><button class="b s" data-a="inc|${p.id}">+</button></div>`:`<button class="b g s" data-a="inc|${p.id}">🛒 Savatga</button>`}</div>`).join('')}</div>`:'<div class="card mu">Hozircha mahsulotlar yo\'q</div>')
+   +(n?`<div class="cartbar"><div><b>${n} ta mahsulot</b><div class="mu">${money(tot)}</div></div><button class="b g" data-a="cart">🛒 Savat</button></div>`:'')},
  sub(){const left=shop.sub_until?Math.ceil((new Date(shop.sub_until)-new Date())/864e5):0;
   return `<div class="card w"><small>Obuna holati</small><div class="v ${left>0?'ok':'bad'}">${left>0?'Faol':'Tugagan'}</div><div class="mu" style="margin-top:8px">${shop.sub_until?`Amal qilish muddati: ${new Date(shop.sub_until).toLocaleDateString('uz')} (${Math.max(left,0)} kun qoldi)`:'Muddat belgilanmagan'}</div></div>
   <div class="grid">${[['1 oylik',100000,1],['3 oylik',250000,3],['6 oylik',500000,6]].map(p=>`<div class="card plan"><small>${p[0]}</small><div class="v gd">${p[1].toLocaleString('ru-RU')} <small>so'm</small></div><div class="mu" style="margin-top:6px">oyiga ${Math.round(p[1]/p[2]).toLocaleString('ru-RU')} so'm</div></div>`).join('')}</div>
@@ -154,7 +175,7 @@ const V={
   <details><summary>Parolni unutdim</summary><p>Admin bilan bog'laning, u yangi parol beradi.</p></details></div><div class="card"><b>📞 Aloqa</b><div class="row"><span>Telegram</span><a class="lk" href="https://t.me/imradjabov" data-tg="1">@imradjabov</a></div><div class="row"><span>Telefon</span><a class="lk" href="tel:+998904692017">+998 90 469 20 17</a></div></div>`}
 };
 const PERS=[[7,'7 kun'],[30,'30 kun'],[90,'90 kun'],[0,'Hammasi']],PAL=['#e0b567','#7c6cff','#38d39f','#ff6b6b','#4cc3ff','#f78fb3','#9aa0ad'],WDN=['Yak','Dush','Sesh','Chor','Pay','Jum','Shan'],MONN=['Yan','Fev','Mar','Apr','May','Iyn','Iyl','Avg','Sen','Okt','Noy','Dek'];
-let per=30,WDG={},chartsB=[],xchart=null;
+let PROD=[],ORD=[],cart={},stTab='p';let per=30,WDG={},chartsB=[],xchart=null;
 const num=n=>String(n),ckey=q=>q.client_tg_id?'t'+q.client_tg_id:(q.phone?'p'+q.phone:'n'+String(q.client_name).toLowerCase());
 const grp=(arr,kf,vf)=>{const m={};arr.forEach(x=>{const k=kf(x);m[k]=(m[k]||0)+vf(x)});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
 const dset=(l,d,c)=>({label:l,data:d,backgroundColor:c,borderRadius:6}),lset=(l,d,c)=>({label:l,data:d,borderColor:c,backgroundColor:c+'33',tension:.3,fill:true,pointRadius:2}),dn=d=>({data:d,backgroundColor:PAL,borderWidth:0});
@@ -203,6 +224,18 @@ function drawCharts(){chartsB.forEach(c=>c.destroy());chartsB=[];WDG={};
  if(!window.Chart){$('#chg').innerHTML='<div class="card mu">Diagramma kutubxonasi yuklanmadi (internetni tekshiring)</div>';return}
  $('#chg').innerHTML=C.map(c=>`<div class="card cl" data-a="wd|${c[0]}"><b>${c[1]}</b><div class="cw"><canvas id="cv_${c[0]}"></canvas></div><div class="mu" style="text-align:right">To'liq ko'rish ›</div></div>`).join('');
  C.forEach(c=>chartsB.push(mkChart($('#cv_'+c[0]),c,false)))}
+const OSTB={yangi:'🆕 Yangi',yetkazilmoqda:'🚚 Yetkazilmoqda',yetkazildi:'✅ Yetkazildi',bekor:'❌ Bekor'};
+const fdtB=d=>new Date(d).toLocaleString('uz',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const leftTxt=m=>m>=1440?Math.floor(m/1440)+' kun'+(m%1440?' '+durTxt(m%1440):''):durTxt(m);
+function etaTxt(o){if(o.status==='yangi')return '⏳ Yetkazish vaqti belgilanishi kutilmoqda';
+ if(o.status==='yetkazilmoqda'&&o.delivery_at){const m=Math.round((new Date(o.delivery_at)-Date.now())/60000);return `🚚 ${fdtB(o.delivery_at)} · ${m>0?'taxminan '+leftTxt(m)+'dan so\'ng':'yaqin orada yetib keladi'}`}
+ return o.status==='yetkazildi'?'✅ Yetkazib berildi':''}
+async function loadStore(){try{const [p,o]=await Promise.all([call('products'),call('orders')]);PROD=p.products||[];ORD=o.orders||[];draw()}catch(e){}}
+function showCart(){const L=PROD.filter(p=>cart[p.id]);if(!L.length){$('#xdlg').close();return}
+ const tot=L.reduce((s,p)=>s+cart[p.id]*Number(p.price),0);
+ $('#xbody').innerHTML=`<b style="font-size:18px">🛒 Savat</b>${L.map(p=>`<div class="row"><div><b>${esc(p.name)}</b><div class="mu">${money(p.price)}</div></div><div class="stp"><button class="b s" data-a="cdec|${p.id}">−</button><b>${cart[p.id]}</b><button class="b s" data-a="cinc|${p.id}">+</button></div></div>`).join('')}
+ <div class="row"><b>Jami</b><b class="gd">${money(tot)}</b></div><div class="btns" style="margin-top:10px"><button class="b g" data-a="order">✅ Buyurtma berish</button><button class="b" data-a="cclear">Tozalash</button></div>`;
+ if(!$('#xdlg').open)$('#xdlg').showModal()}
 function draw(){document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===page));
  $('#title').textContent=(shop.name?shop.name+' · ':'')+PAGES.find(p=>p[0]===page)[2];$('#view').innerHTML=V[page]();if(page==='stats')setTimeout(drawCharts,0)}
 </script></body></html>

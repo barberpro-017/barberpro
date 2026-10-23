@@ -38,3 +38,7 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 - SQL Editor: `supabase/08_sale_agents.sql` ni ishga tushiring.
 - Admin saytda Sale agents bo'limidan agent qo'shiladi (login, parol, agent code).
 - `favicon.svg` — sayt tabidagi belgi.
+
+## Magazin
+- SQL Editor: `supabase/09_store.sql` ni ishga tushiring (jadvallar va mahsulot rasmlari uchun bucket).
+- Admin: Magazin > Mahsulot qo'shish. Barber ilovasida: Magazin > savat > Buyurtma berish.
