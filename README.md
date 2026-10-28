@@ -42,3 +42,7 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 ## Magazin
 - SQL Editor: `supabase/09_store.sql` ni ishga tushiring (jadvallar va mahsulot rasmlari uchun bucket).
 - Admin: Magazin > Mahsulot qo'shish. Barber ilovasida: Magazin > savat > Buyurtma berish.
+
+## Yangilanish (Magazin+, ko'p xizmat, loading, Android)
+- SQL Editor: `supabase/10_store_plus_apk.sql` ni ishga tushiring.
+- Android: `android/` papkasi va `.github/workflows/android.yml` (APK'ni GitHub Actions yig'adi). Batafsil: `android/README.md`.

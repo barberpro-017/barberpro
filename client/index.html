@@ -56,7 +56,30 @@ textarea:focus,input.in:focus{border-color:var(--v)}
 .st{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:#ffffff14;text-align:right}.st.ok{color:var(--ok)}.st.go{color:var(--g)}.st.bad{color:var(--bad)}.st.wait{color:#9ab4ff}
 .oq{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#0d0d20;border:1px solid var(--l);border-radius:16px;padding:12px 14px;margin-top:10px}
 .oq .t2{font-weight:700;color:var(--ok);text-align:right}.cx{margin-top:10px;background:none;border:1px solid var(--l);border-radius:10px;padding:8px 12px;color:var(--bad);cursor:pointer}
+#ld{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:radial-gradient(circle at 20% 8%,#2a1f6b,transparent 50%),radial-gradient(circle at 88% 92%,#5c2a55,transparent 50%),#0a0a18;color:#f5f5fb}
+#ld.on{display:flex}
+.ldw{position:relative;margin:18px 0}.ldw::before,.ldw::after{content:"";position:absolute;left:50%;transform:translateX(-50%);background:#f2c66d;border-radius:6px}
+.ldw::before{top:-14px;width:24px;height:12px}.ldw::after{bottom:-14px;width:34px;height:12px}
+.ldp{position:relative;width:50px;height:124px;border-radius:25px;overflow:hidden;border:3px solid #ffffff2a;box-shadow:0 0 44px #7c5cff77}
+.ldp i{position:absolute;left:0;right:0;top:-60px;bottom:-60px;background:repeating-linear-gradient(-45deg,#f5f1e8 0 10px,#7c5cff 10px 20px,#f5f1e8 20px 30px,#f2c66d 30px 40px);animation:ldpole 1s linear infinite}
+@keyframes ldpole{to{transform:translateY(56.57px)}}
+.lds{font-size:34px;display:inline-block;animation:ldsnip .45s ease-in-out infinite alternate}
+@keyframes ldsnip{from{transform:rotate(-16deg) scale(1)}to{transform:rotate(16deg) scale(1.12)}}
+.ldt{font-size:15px;color:#c9c9e6;min-height:20px;text-align:center;padding:0 24px}
+.ldb{width:170px;height:4px;background:#ffffff1c;border-radius:4px;overflow:hidden}.ldb i{display:block;width:40%;height:100%;background:linear-gradient(90deg,#7c5cff,#f2c66d);animation:ldbar 1.1s ease-in-out infinite}
+@keyframes ldbar{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;flex:none}
+.sum{margin-top:10px;background:#0d0d20;border:1px solid var(--l);border-radius:12px;padding:10px 12px;color:var(--m);font-size:14px}.sum b{color:var(--g)}
+.chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--l);display:grid;place-items:center;flex:none}.svc.on .chk{background:var(--g);border-color:var(--g);color:#1a1204}.svc.on .chk::after{content:"✓";font-size:14px;font-weight:800}
 </style></head><body>
+<div id="ld" class="on"><div class="ldw"><div class="ldp"><i></i></div></div><div class="lds">✂️</div><div class="ldt" id="ldt"></div><div class="ldb"><i></i></div></div>
+<script>
+window.ld=(function(){const M=["Soch tarayapmiz...","Ustara charxlanyapti...","Qaychilar o'tkirlanyapti...","Kreslo tayyorlanyapti...","Soqol shakllantirilmoqda...","Sartarosh ustuni aylanyapti..."];
+ let t0=0,iv=null,el=null,tx=null,k=0;const init=()=>{el=document.getElementById('ld');tx=document.getElementById('ldt')};
+ return {show(){if(!el)init();if(!el)return;t0=Date.now();el.classList.add('on');k=Math.floor(Math.random()*M.length);tx.textContent=M[k];clearInterval(iv);iv=setInterval(()=>{k=(k+1)%M.length;tx.textContent=M[k]},1400)},
+  hide(){if(!el)init();if(!el)return;const w=Math.max(0,700-(Date.now()-t0));setTimeout(()=>{el.classList.remove('on');clearInterval(iv)},w)}}})();
+</script>
+
 <div class="bg"><i style="left:6%;top:12%">✂️</i><i style="right:8%;top:22%;animation-delay:-3s">💈</i><i style="left:12%;top:58%;animation-delay:-5s">🪒</i><i style="right:14%;top:70%;animation-delay:-2s">✂️</i><i style="left:46%;top:86%;animation-delay:-6s">💈</i></div>
 
 <section class="scr on" id="sWelcome">
@@ -67,23 +90,24 @@ textarea:focus,input.in:focus{border-color:var(--v)}
  <div class="hi">Xush kelibsiz<span id="hello"></span></div>
  <h1 class="serif">BarberPro 017</h1>
  <p class="lead">Yaqin atrofdagi eng yaxshi sartaroshlar va onlayn navbat bir joyda</p>
+ <input class="in" id="appName" placeholder="Ismingiz" maxlength="40" style="max-width:340px;margin-bottom:14px;display:none">
  <button class="cta" id="start">Davom etish →</button>
 </section>
 
 <section class="scr" id="sRegion">
- <div class="top"><button class="back" data-b="sWelcome">‹</button><h2 class="serif" style="flex:1">Hududni tanlang</h2><button class="back" data-o="1" title="Buyurtmalarim">📋</button></div>
+ <div class="top"><button class="back" data-b="sWelcome">‹</button><h2 class="serif" style="flex:1">Hududni tanlang</h2><button class="back" data-o="1" title="Buyurtmalarim"><svg class="ic" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></button></div>
  <div class="sub">Qaysi hududdagi sartaroshni qidiryapsiz?</div><div id="regList"></div>
 </section>
 
 <section class="scr" id="sShops">
- <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" id="rTitle" style="flex:1"></h2><button class="back" data-o="1" title="Buyurtmalarim">📋</button></div>
+ <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" id="rTitle" style="flex:1"></h2><button class="back" data-o="1" title="Buyurtmalarim"><svg class="ic" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></button></div>
  <div class="sub">Sartaroshni tanlang</div><div id="shopList"></div>
 </section>
 
 <section class="scr" id="sShop">
  <div class="top"><button class="back" data-b="sShops">‹</button><h2 class="serif" id="dShop"></h2></div>
  <div class="who"><small>Sartarosh</small><h2 class="serif" id="dName"></h2><a id="dPhone" href="#"></a></div>
- <label class="lb">Xizmatni tanlang</label><div class="sv" id="svcList"></div>
+ <label class="lb">Xizmat(lar)ni tanlang (bir nechta tanlash mumkin)</label><div class="sv" id="svcList"></div><div class="sum" id="svcSum">Bir yoki bir nechta xizmat tanlang</div>
  <label class="lb">Soat nechchida borasiz?</label><input class="in" id="btime" type="time" required><div class="hint">Belgilangan vaqtdan 10 daqiqa kechiksangiz, navbatingiz keyingi mijozga beriladi va siz 1 ta pastga tushasiz.</div>
  <label class="lb">Izoh (ixtiyoriy)</label><textarea id="note" rows="3" maxlength="300" placeholder="Masalan: soqolni ham tuzating"></textarea>
  <label class="lb">Telefon raqamingiz (ixtiyoriy)</label><input class="in" id="cphone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __">
@@ -92,7 +116,7 @@ textarea:focus,input.in:focus{border-color:var(--v)}
 </section>
 
 <section class="scr" id="sOrders">
- <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" style="flex:1">Buyurtmalarim</h2><button class="back" id="ordRef" title="Yangilash">🔄</button></div>
+ <div class="top"><button class="back" data-b="sRegion">‹</button><h2 class="serif" style="flex:1">Buyurtmalarim</h2><button class="back" id="ordRef" title="Yangilash"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/><path d="M3 21v-5h5"/></svg></button></div>
  <div id="ordList"></div>
  <button class="cta" id="newOrd" style="max-width:none;margin-top:6px">➕ Yangi navbat olish</button>
 </section>
@@ -104,35 +128,42 @@ if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#0a0a18');tg.setBackgroundC
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
 const dur=m=>m>=60?Math.floor(m/60)+' soat'+(m%60?' '+m%60+' daqiqa':''):m+' daqiqa';
+const APP=/BarberProApp/.test(navigator.userAgent);
+const lget=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+let DEV=lget('cdev');if(!DEV){DEV=[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join('');lset('cdev',DEV)}
+let NAME=lget('cname')||'';
 const u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.first_name)$('#hello').textContent=', '+u.first_name;
-async function api(action,o={}){const r=await fetch('/api/client',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,initData:tg?tg.initData:'',...o})});
+if(APP){if(NAME)$('#hello').textContent=', '+NAME;else $('#appName').style.display=''}
+async function api(action,o={}){const r=await fetch('/api/client',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,initData:tg?tg.initData:'',...(APP?{app:'apk',device:DEV,name:NAME}:{}),...o})});
  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Xatolik');return j}
-let shops=[],region=null,cur=null,svc=null;
+let shops=[],region=null,cur=null,SVC=[],sel=new Set();
 function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
 document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>go(b.dataset.b));
 async function loadShops(){$('#regList').innerHTML='<div class="empty">Yuklanmoqda...</div>';
  try{shops=(await api('shops')).shops;drawRegions()}catch(e){$('#regList').innerHTML='<div class="err">'+esc(e.message)+'</div>'}}
-$('#start').onclick=()=>{go('sRegion');loadShops()};
+$('#start').onclick=async()=>{if(APP&&!NAME){const v=$('#appName').value.trim();if(v.length<2){$('#appName').focus();return}NAME=v;lset('cname',v)}ld.show();go('sRegion');await loadShops();ld.hide()};
 function drawRegions(){const m=new Map();shops.forEach(s=>{const r=(s.region||'').trim(),k=r.toLowerCase();if(!k)return;if(!m.has(k))m.set(k,{n:r,c:0});m.get(k).c++});
  $('#regList').innerHTML=m.size?[...m].map(([k,v])=>`<button class="reg" data-k="${esc(k)}"><span class="pin">📍</span><span><b>${esc(v.n)}</b><small>${v.c} ta sartaroshxona</small></span><span class="ar">›</span></button>`).join(''):'<div class="empty">Hozircha sartaroshxonalar yo\'q</div>'}
 $('#regList').onclick=e=>{const b=e.target.closest('.reg');if(!b)return;region=b.dataset.k;drawShops();go('sShops')};
 const wait=m=>m<=0?"Kutish yo'q":'~'+dur(m);
 function drawShops(){const L=shops.filter(s=>(s.region||'').trim().toLowerCase()===region);$('#rTitle').textContent=L[0]?L[0].region.trim():'';
  $('#shopList').innerHTML=L.map(s=>`<button class="shop ${s.open?'':'cl'}" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><em class="bd ${s.open?'on':'off'}">${s.open?'🟢 Ishlamoqda':'🔴 Yopiq'}</em><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
-$('#shopList').onclick=async e=>{const b=e.target.closest('.shop');if(!b)return;cur=shops.find(s=>s.id===b.dataset.id);svc=null;
+$('#shopList').onclick=async e=>{const b=e.target.closest('.shop');if(!b)return;cur=shops.find(s=>s.id===b.dataset.id);sel.clear();SVC=[];
  $('#dShop').textContent=cur.name;$('#dName').textContent=cur.barber;$('#dPhone').textContent='📞 '+cur.phone;$('#dPhone').href='tel:'+String(cur.phone).replace(/[^+\d]/g,'');
- $('#note').value='';$('#cphone').value='';$('#btime').value=defTime();$('#be').textContent=cur.open?'':"Sartaroshxona hozir yopiq, navbat olib bo'lmaydi";$('#book').disabled=true;$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
- try{const r=await api('shop',{id:cur.id});
-  $('#svcList').innerHTML=r.services.length?r.services.map(x=>`<button class="svc" data-id="${esc(x.id)}"><span><b>${esc(x.name)}</b><small>⏱ ${dur(x.duration_min)}</small></span><span class="pr">${money(x.price)}</span></button>`).join(''):'<div class="mu">Sartarosh hali xizmat qo\'shmagan</div>'}
+ $('#note').value='';$('#cphone').value='';$('#btime').value=defTime();$('#be').textContent=cur.open?'':"Sartaroshxona hozir yopiq, navbat olib bo'lmaydi";$('#book').disabled=true;$('#svcSum').textContent='Bir yoki bir nechta xizmat tanlang';$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
+ try{const r=await api('shop',{id:cur.id});SVC=r.services;
+  $('#svcList').innerHTML=r.services.length?r.services.map(x=>`<button class="svc" data-id="${esc(x.id)}"><span class="chk"></span><span style="flex:1"><b>${esc(x.name)}</b><small>⏱ ${dur(x.duration_min)}</small></span><span class="pr">${money(x.price)}</span></button>`).join(''):'<div class="mu">Sartarosh hali xizmat qo\'shmagan</div>'}
  catch(x){$('#svcList').innerHTML='<div class="err">'+esc(x.message)+'</div>'}};
-$('#svcList').onclick=e=>{const b=e.target.closest('.svc');if(!b)return;svc=b.dataset.id;document.querySelectorAll('.svc').forEach(x=>x.classList.toggle('on',x===b));$('#book').disabled=!cur.open};
+$('#svcList').onclick=e=>{const b=e.target.closest('.svc');if(!b)return;const id=b.dataset.id;sel.has(id)?sel.delete(id):sel.add(id);b.classList.toggle('on',sel.has(id));sumSel()};
+function sumSel(){const L=SVC.filter(x=>sel.has(x.id)),p=L.reduce((a,x)=>a+Number(x.price),0),d=L.reduce((a,x)=>a+(x.duration_min||30),0);
+ $('#svcSum').innerHTML=L.length?`<b>${L.length} ta xizmat</b> · ${money(p)} · ⏱ ${dur(d)}`:'Bir yoki bir nechta xizmat tanlang';$('#book').disabled=!(cur&&cur.open&&L.length)}
 function defTime(){const d=new Date(Date.now()+20*60000);d.setMinutes(Math.ceil(d.getMinutes()/5)*5,0,0);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 function maskPhone(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||v.trim().startsWith('998'))d=d.slice(3);d=d.slice(0,9);
  const p=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);return p.length?'+998 '+p.join(' '):'+998'}
 const cp=$('#cphone');cp.addEventListener('focus',()=>{if(!cp.value)cp.value='+998 '});cp.addEventListener('input',()=>{cp.value=maskPhone(cp.value)});cp.addEventListener('blur',()=>{if(cp.value.trim()==='+998')cp.value=''});
 $('#book').onclick=async()=>{const b=$('#book');if(!$('#btime').value){$('#be').textContent='Soatni belgilang';return}
  b.disabled=true;b.textContent='Yuborilmoqda...';$('#be').textContent='';
- try{await api('book',{id:cur.id,service:svc,time:$('#btime').value,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sOrders');loadOrders()}
+ try{await api('book',{id:cur.id,services:[...sel],time:$('#btime').value,note:$('#note').value.trim(),phone:$('#cphone').value.trim()});go('sOrders');loadOrders()}
  catch(x){$('#be').textContent=x.message;b.disabled=false}b.textContent='Navbatga yozilish'};
 const ST={sorov:['⏳ Tasdiqlanishi kutilmoqda','wait'],kutilmoqda:['✅ Navbat tasdiqlandi','ok'],jarayonda:['✂️ Xizmat boshlandi','go'],tugadi:['🏁 Yakunlandi',''],bekor:['❌ Bekor qilindi','bad']};
 const hmT=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
@@ -149,4 +180,5 @@ $('#ordList').onclick=async e=>{const b=e.target.closest('[data-c]');if(!b||!con
 document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{go('sOrders');loadOrders()});
 $('#ordRef').onclick=()=>loadOrders();$('#newOrd').onclick=()=>{go('sRegion');loadShops()};
 setInterval(()=>{if($('#sOrders').classList.contains('on')&&!document.hidden)loadOrders(true)},30000);
+ld.show();Promise.all([document.fonts?document.fonts.ready:null,new Promise(r=>setTimeout(r,1100))]).then(()=>ld.hide());
 </script></body></html>

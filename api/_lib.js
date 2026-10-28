@@ -33,7 +33,7 @@ async function sweep(shopId) {
     const N = list[i + 1], lk = new Date(key(list[i])).toISOString(), nk = new Date(key(N)).toISOString();
     await Promise.all([db('queue?id=eq.' + L.id, { method: 'PATCH', body: JSON.stringify({ rank_at: nk, delayed: 1 }) }), db('queue?id=eq.' + N.id, { method: 'PATCH', body: JSON.stringify({ rank_at: lk }) })]);
     list[i].rank_at = nk; N.rank_at = lk;
-    if (ct && L.client_tg_id) await tg(ct, 'sendMessage', { chat_id: L.client_tg_id, text: "⏰ Siz belgilangan vaqtda kelmadingiz, shuning uchun navbatingiz 1 ta pastga tushdi." });
+    if (ct && L.client_tg_id > 0) await tg(ct, 'sendMessage', { chat_id: L.client_tg_id, text: "⏰ Siz belgilangan vaqtda kelmadingiz, shuning uchun navbatingiz 1 ta pastga tushdi." });
   }
 }
 function verifyInit(initData, token, maxAge = 86400) {

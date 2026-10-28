@@ -14,6 +14,27 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
   const b = req.body || {};
   if (b.action === 'login') {
+    if (b.app === 'apk') {
+      // Android ilova: sartaroshxona login-paroli + qurilma (Telegram bot bog'lanishi bu yerda yo'q)
+      const dev = String(b.device || ''), lg = String(b.login || '').trim().toLowerCase().slice(0, 64), gen = "Login yoki parol noto'g'ri";
+      if (!/^[0-9a-f]{32}$/.test(dev) || !lg) return bad(res, 401, gen);
+      const fk = 'agent_login_fails?login=eq.' + encodeURIComponent('b:' + lg);
+      const f = await db(fk + '&select=fails,locked_until'), fr = f.data && f.data[0];
+      if (fr && fr.locked_until && new Date(fr.locked_until) > new Date())
+        return bad(res, 429, `Juda ko'p urinish. ${Math.ceil((new Date(fr.locked_until) - Date.now()) / 60000)} daqiqadan so'ng urinib ko'ring`);
+      const r = await db(`barbershops?login=eq.${encodeURIComponent(lg)}&select=id,password_hash`), s = r.data && r.data[0];
+      const [salt, h] = String((s && s.password_hash) || ':').split(':'), x = crypto.scryptSync(String(b.password || ''), salt || 'x', 64);
+      if (!(s && h && crypto.timingSafeEqual(x, Buffer.from(h, 'hex')))) {
+        if (s) {
+          const fails = ((fr && fr.fails) || 0) + 1;
+          await db('agent_login_fails?on_conflict=login', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify({ login: 'b:' + lg, fails: fails >= 5 ? 0 : fails, locked_until: fails >= 5 ? new Date(Date.now() + 15 * 60000).toISOString() : null }) });
+        }
+        return bad(res, 401, gen);
+      }
+      if (fr) await db(fk, { method: 'DELETE' });
+      return res.json({ token: mk(s.id, 'd:' + dev) });
+    }
     // Faqat shu sartaroshxonaning O'Z boti ichidan (imzolangan Telegram ma'lumoti) va faqat shu sartaroshxona login-paroli bilan kirish mumkin
     const sid = String(b.shop || '');
     if (!UUID.test(sid)) return bad(res, 400, "Sartaroshxona botingiz orqali kiring");
@@ -39,8 +60,11 @@ module.exports = async (req, res) => {
   }
   const t = ver(b.token);
   if (!t) return bad(res, 401, 'Qayta kiring');
-  const id = t.id, bt = await botToken(id), user = bt && verifyInit(String(b.initData || ''), bt);
-  if (!user || user.id !== t.u) return bad(res, 401, 'Qayta kiring');
+  const id = t.id;
+  let okAuth = false;
+  if (String(t.u).startsWith('d:')) okAuth = b.app === 'apk' && ('d:' + String(b.device)) === t.u;
+  else { const bt = await botToken(id), user = bt && verifyInit(String(b.initData || ''), bt); okAuth = !!user && user.id === t.u; }
+  if (!okAuth) return bad(res, 401, 'Qayta kiring');
   if (b.action === 'shop') {
     const r = await db('barbershops?id=eq.' + id + '&select=name,barber_name,address,sub_until,is_open');
     return res.json({ shop: r.data && r.data[0] });
@@ -50,11 +74,11 @@ module.exports = async (req, res) => {
     return res.json({ ok: true });
   }
   if (b.action === 'products') {
-    const r = await db('products?select=id,name,price,image_url&order=created_at.desc');
+    const r = await db('products?select=id,name,price,image_url,category,description,created_at&order=created_at.desc');
     return res.json({ products: r.data || [] });
   }
   if (b.action === 'orders') {
-    const r = await db(`orders?barbershop_id=eq.${id}&select=id,items,total,status,delivery_at,created_at&order=created_at.desc&limit=30`);
+    const r = await db(`orders?barbershop_id=eq.${id}&select=id,items,total,status,delivery_at,created_at,note&order=created_at.desc&limit=30`);
     return res.json({ orders: r.data || [] });
   }
   if (b.action === 'order') {
@@ -72,7 +96,7 @@ module.exports = async (req, res) => {
       lines[p.id] = lines[p.id] || { id: p.id, name: p.name, price: Number(p.price), qty: 0 };
       lines[p.id].qty += q; total += Number(p.price) * q;
     }
-    const ins = await db('orders', { method: 'POST', body: JSON.stringify({ barbershop_id: id, items: Object.values(lines), total }) });
+    const ins = await db('orders', { method: 'POST', body: JSON.stringify({ barbershop_id: id, items: Object.values(lines), total, note: String(b.note || '').trim().slice(0, 300) || null }) });
     return ins.ok ? res.json({ ok: true }) : bad(res, 500, "Buyurtmani yuborib bo'lmadi");
   }
   if (b.action === 'ocancel') {

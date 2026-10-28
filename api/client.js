@@ -14,11 +14,19 @@ const bad = (res, c, m) => res.status(c).json({ error: m });
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
   const b = req.body || {};
-  const cb = await db('client_bot?id=eq.1&select=bot_token');
-  const token = cb.data && cb.data[0] && cb.data[0].bot_token;
-  if (!token) return bad(res, 503, 'Xizmat hozircha ishlamayapti');
-  const user = verify(String(b.initData || ''), token);
-  if (!user) return bad(res, 401, 'Iltimos, ilovani Telegram bot orqali qayta oching');
+  let user = null;
+  if (b.app === 'apk') {
+    // Android ilova: Telegram'siz, qurilma identifikatori bilan (manfiy id Telegram id'lari bilan to'qnashmaydi)
+    const d = String(b.device || '');
+    if (!/^[0-9a-f]{32}$/.test(d)) return bad(res, 401, 'Qurilma aniqlanmadi');
+    user = { id: -parseInt(d.slice(0, 12), 16), first_name: String(b.name || '').trim().slice(0, 40) || 'Mijoz' };
+  } else {
+    const cb = await db('client_bot?id=eq.1&select=bot_token');
+    const token = cb.data && cb.data[0] && cb.data[0].bot_token;
+    if (!token) return bad(res, 503, 'Xizmat hozircha ishlamayapti');
+    user = verify(String(b.initData || ''), token);
+    if (!user) return bad(res, 401, 'Iltimos, ilovani Telegram bot orqali qayta oching');
+  }
   if (b.action === 'shops') {
     await sweep();
     const d = new Date(Date.now() + 5 * 3600e3);
@@ -70,8 +78,8 @@ module.exports = async (req, res) => {
     return res.json({ services: r.data || [] });
   }
   if (b.action === 'book') {
-    const sid = String(b.service || '');
-    if (!UUID.test(sid)) return bad(res, 400, 'Xizmatni tanlang');
+    const sids = [...new Set((Array.isArray(b.services) ? b.services : [b.service]).map(String))].slice(0, 8);
+    if (!sids.length || sids.some(x => !UUID.test(x))) return bad(res, 400, 'Xizmatni tanlang');
     const phone = String(b.phone || '').trim();
     if (phone && !/^\+998 \d{2} \d{3} \d{2} \d{2}$/.test(phone)) return bad(res, 400, "Telefon raqami noto'g'ri");
     const tm = String(b.time || '');
@@ -81,9 +89,11 @@ module.exports = async (req, res) => {
     const sh = await db('barbershops?id=eq.' + id + '&select=is_open,sub_until'), shp = sh.data && sh.data[0];
     if (!shp) return bad(res, 404, 'Sartaroshxona topilmadi');
     if (!shp.is_open) return bad(res, 400, 'Sartaroshxona hozir yopiq');
-    const sv = await db(`services?id=eq.${sid}&barbershop_id=eq.${id}&select=name,price,duration_min`);
-    const svc = sv.data && sv.data[0];
-    if (!svc) return bad(res, 404, 'Xizmat topilmadi');
+    const sv = await db(`services?id=in.(${sids.join(',')})&barbershop_id=eq.${id}&select=name,price,duration_min`), sl = sv.data || [];
+    if (!sl.length || sl.length !== sids.length) return bad(res, 404, 'Xizmat topilmadi');
+    const svc = { name: sl.map(x => x.name).join(' + '), price: sl.reduce((a, x) => a + Number(x.price), 0), duration_min: sl.reduce((a, x) => a + (x.duration_min || 30), 0) };
+    const pend = await db(`queue?barbershop_id=eq.${id}&status=eq.sorov&select=id`);
+    if (pend.data && pend.data.length >= 25) return bad(res, 429, "Sartaroshxonada kutilayotgan so'rovlar ko'p, keyinroq urinib ko'ring");
     const open = await db(`queue?barbershop_id=eq.${id}&client_tg_id=eq.${user.id}&status=in.(sorov,kutilmoqda,jarayonda)&select=id`);
     if (open.data && open.data.length >= 2) return bad(res, 429, "Sizda bu sartaroshxonada faol navbat bor");
     const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Mijoz', note = String(b.note || '').trim().slice(0, 300);
