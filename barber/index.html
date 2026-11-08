@@ -83,10 +83,10 @@ details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}d
 .ticket{margin:12px 0;text-align:center;background:linear-gradient(135deg,#2b2750,#3a2d12);border:1px dashed var(--g);border-radius:18px;padding:18px}
 .ticket small{color:var(--m)}.ticket b{display:block;font-size:44px;color:var(--g);letter-spacing:.04em}
 .aqf{display:grid;gap:8px;margin-top:10px}
-#mww{position:fixed;inset:0;z-index:60;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(circle at 12% 0,#2a1f6b66,transparent 45%),radial-gradient(circle at 95% 100%,#5c2a5566,transparent 45%),#080912}
+#mww{position:relative;z-index:1;min-height:100vh;padding:12px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(circle at 12% 0,#2a1f6b66,transparent 45%),radial-gradient(circle at 95% 100%,#5c2a5566,transparent 45%),#080912}
 .mw-top{display:flex;align-items:center;gap:12px}.mw-title{display:flex;align-items:center;gap:10px;flex:1}.mw-title b{font-size:20px;letter-spacing:.06em}.mw-title small{display:block;color:var(--m)}
 .mw-logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),var(--g));color:#17120a}.mw-logo .ic{width:24px;height:24px}
-.mw-grid{flex:1;min-height:0;display:grid;gap:12px;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);grid-template-rows:auto minmax(260px,1fr) auto auto;grid-template-areas:"chair apps" "orders apps" "orders addq" "status clock"}
+.mw-grid{display:flex;flex-direction:column;gap:12px}
 .mw-p{background:linear-gradient(145deg,#171a2b,#10121e);border:1px solid #ffffff14;border-radius:22px;padding:16px;min-width:0;min-height:0;box-shadow:0 10px 30px #0006}
 .mw-h{font-weight:700;color:var(--m);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .mw-ch{display:flex;align-items:center;gap:14px}.av{width:60px;height:60px;border-radius:20px;display:grid;place-items:center;font-size:26px;font-weight:800;background:linear-gradient(135deg,var(--a),var(--g));color:#17120a;flex:none}
@@ -110,7 +110,25 @@ details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}d
 .mw-ah{display:flex;align-items:center;gap:8px;margin-bottom:8px}.mw-ah b{flex:1}.mw-fr{width:100%;height:calc(100% - 52px);min-height:260px;border:0;border-radius:14px;background:#000}
 .yt-in{display:flex;gap:8px;margin-bottom:8px}.yt-in input{flex:1;min-width:0}
 .mw-apps{display:flex;flex-direction:column}
-@media(max-width:900px){.mw-grid{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"chair" "status" "orders" "addq" "apps" "clock"}.mw-list{max-height:60vh}.mw-fr{height:340px}.mw-row{grid-template-columns:1fr auto}.mw-time{grid-column:1;text-align:left;display:flex;gap:8px;align-items:baseline}.mw-act{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.mw-apps{min-height:300px}}
+
+#mwChair{order:1}#mwStatus{order:2}.mw-orders{order:3}.mw-add{order:4}#mwApps{order:5}.mw-clock{order:6}
+.mw-top{position:sticky;top:0;z-index:5;padding:8px 0;background:#080912e6;backdrop-filter:blur(8px)}
+.mw-p{overflow:visible}.mw-orders{overflow:visible}.mw-list{max-height:55vh}
+.mw-row{grid-template-columns:minmax(0,1fr) auto;gap:10px}.mw-time{grid-column:1;text-align:left;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.mw-act{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}
+.mw-act .mb{white-space:normal;padding:10px 6px;font-size:12px}
+.mw-ch{flex-wrap:wrap}.tm{font-size:26px}.av{width:52px;height:52px;font-size:22px}.cn{font-size:19px}
+.mw-fr{flex:none;height:360px;min-height:0}.mw-apps{min-height:0}
+.mw-status .stb{min-width:0;padding:12px 6px;font-size:14px}.mw-add{padding:16px;font-size:17px}
+@media (orientation:landscape) and (min-width:700px){
+ .mw-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start;grid-template-areas:"chair addq" "status apps" "orders apps" "orders clock"}
+ .mw-list{max-height:45vh}.mw-fr{height:300px}
+}
+@media (min-width:1100px) and (min-height:620px){
+ .mw-grid{min-height:calc(100vh - 92px);align-items:stretch;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);grid-template-rows:auto minmax(260px,1fr) auto auto;grid-template-areas:"chair apps" "orders apps" "orders addq" "status clock"}
+ .mw-p{overflow:hidden}.mw-orders{overflow:hidden}.mw-list{max-height:none}
+ .mw-row{grid-template-columns:minmax(0,1.6fr) minmax(70px,.7fr) auto}.mw-time{grid-column:auto;display:block;text-align:center}.mw-act{grid-column:auto;grid-template-columns:1fr}.mw-act .mb{white-space:nowrap;padding:10px 14px;font-size:13px}
+ .mw-fr{flex:1;height:auto;min-height:260px}.mw-apps{min-height:0}.tm{font-size:30px}.av{width:60px;height:60px;font-size:26px}.cn{font-size:22px}
+}
 </style></head><body>
 <div id="ld"><div class="ldw"><div class="ldp"><i></i></div></div><div class="lds">✂️</div><div class="ldt" id="ldt"></div><div class="ldb"><i></i></div></div>
 <script>
@@ -157,7 +175,7 @@ async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST
 async function load(){const [s,a,b,c]=await Promise.all([call('shop'),...['services','queue','transactions'].map(t=>call('list',{table:t}))]);
  shop=s.shop||{};D.services=a.rows;D.queue=b.rows;D.transactions=c.rows;draw();if(mwwOpen)drawMww()}
 function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
-function out(){token=null;ls.d('bt');show(false)}
+function out(){token=null;ls.d('bt');mwwOpen=false;$('#mww').classList.add('hide');show(false)}
 async function start(){ld.show();show(true);try{await load()}catch(e){}ld.hide()}
 const SHOP=new URLSearchParams(location.search).get('s')||'',APP=/BarberProApp/.test(navigator.userAgent);
 let DEV=ls.g('bdev');if(!DEV){DEV=[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join('');ls.s('bdev',DEV)}
@@ -179,7 +197,7 @@ function openForm(title,fields,cb){const f=$('#df');
 const add=(table,row)=>call('add',{table,row});
 const A={
  mww(){openMww()},
- mwclose(){mwwOpen=false;$('#mww').classList.add('hide')},
+ mwclose(){mwwOpen=false;$('#mww').classList.add('hide');$('#app').classList.remove('hide');window.scrollTo(0,0)},
  async mwacc(id){await A.st(id,'kutilmoqda');toast('Qabul qilindi ✓')},
  async mwturn(id){if(D.queue.some(q=>q.status==='jarayonda'&&q.id!==id))return toast('Stul band: avval stuldagi mijozni yakunlang');await A.st(id,'jarayonda')},
  async mwcan(id){if(confirm('Navbat bekor qilinsinmi?'))await A.st(id,'bekor')},
@@ -361,7 +379,7 @@ function openExt(u){if(window.AndroidApp&&AndroidApp.open)AndroidApp.open(u);els
 function ytEmbed(u){const m=String(u).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/),l=String(u).match(/[?&]list=([A-Za-z0-9_-]+)/);
  if(m)return {src:'https://www.youtube-nocookie.com/embed/'+m[1]+(l?'?list='+l[1]:''),web:'https://www.youtube.com/watch?v='+m[1]};
  if(l)return {src:'https://www.youtube-nocookie.com/embed/videoseries?list='+l[1],web:'https://www.youtube.com/playlist?list='+l[1]};return null}
-function openMww(){mwwOpen=true;$('#mww').classList.remove('hide');drawMww();drawApps();tickMww()}
+function openMww(){mwwOpen=true;$('#app').classList.add('hide');$('#mww').classList.remove('hide');window.scrollTo(0,0);drawMww();drawApps();tickMww()}
 function drawMww(){
  $('#mwShop').textContent=shop.name||'';
  const key=q=>new Date(q.rank_at||q.at).getTime();
