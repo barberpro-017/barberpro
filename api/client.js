@@ -32,12 +32,12 @@ module.exports = async (req, res) => {
     const d = new Date(Date.now() + 5 * 3600e3);
     const start = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - 5 * 3600e3).toISOString();
     const [s, q] = await Promise.all([
-      db('barbershops?select=id,name,address,barber_name,phone,sub_until,is_open&order=name'),
+      db('barbershops?select=id,name,address,barber_name,phone,sub_until,is_open,on_break&order=name'),
       db('queue?status=in.(kutilmoqda,jarayonda)&at=gte.' + encodeURIComponent(start) + '&select=barbershop_id,duration_min')]);
     const today = new Date().toISOString().slice(0, 10), Q = q.data || [];
     const shops = (s.data || []).filter(x => !x.sub_until || x.sub_until >= today).map(x => {
       const w = Q.filter(y => y.barbershop_id === x.id);
-      return { id: x.id, name: x.name, region: x.address, barber: x.barber_name, phone: x.phone, open: !!x.is_open, count: w.length, minutes: w.reduce((a, y) => a + (y.duration_min || 30), 0) };
+      return { id: x.id, name: x.name, region: x.address, barber: x.barber_name, phone: x.phone, open: !!x.is_open, mode: x.is_open ? 'work' : (x.on_break ? 'break' : 'closed'), count: w.length, minutes: w.reduce((a, y) => a + (y.duration_min || 30), 0) };
     });
     return res.json({ shops });
   }
@@ -86,13 +86,15 @@ module.exports = async (req, res) => {
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(tm)) return bad(res, 400, 'Soatni belgilang');
     const tz = new Date(Date.now() + 5 * 3600e3), atMs = Date.UTC(tz.getUTCFullYear(), tz.getUTCMonth(), tz.getUTCDate(), +tm.slice(0, 2) - 5, +tm.slice(3));
     if (atMs < Date.now() - 60000) return bad(res, 400, "Bu vaqt o'tib ketgan, keyinroq soat tanlang");
-    const sh = await db('barbershops?id=eq.' + id + '&select=is_open,sub_until'), shp = sh.data && sh.data[0];
+    const sh = await db('barbershops?id=eq.' + id + '&select=is_open,on_break,sub_until'), shp = sh.data && sh.data[0];
     if (!shp) return bad(res, 404, 'Sartaroshxona topilmadi');
-    if (!shp.is_open) return bad(res, 400, 'Sartaroshxona hozir yopiq');
+    if (!shp.is_open) return bad(res, 400, shp.on_break ? 'Sartarosh hozir tanaffusda, birozdan so\'ng urinib ko\'ring' : 'Sartaroshxona hozir yopiq');
     const sv = await db(`services?id=in.(${sids.join(',')})&barbershop_id=eq.${id}&select=name,price,duration_min`), sl = sv.data || [];
     if (!sl.length || sl.length !== sids.length) return bad(res, 404, 'Xizmat topilmadi');
     const svc = { name: sl.map(x => x.name).join(' + '), price: sl.reduce((a, x) => a + Number(x.price), 0), duration_min: sl.reduce((a, x) => a + (x.duration_min || 30), 0) };
     const pend = await db(`queue?barbershop_id=eq.${id}&status=eq.sorov&select=id`);
+    const rec = await db(`queue?client_tg_id=eq.${user.id}&created_at=gte.${encodeURIComponent(new Date(Date.now() - 3600e3).toISOString())}&select=id`);
+    if (rec.data && rec.data.length >= 6) return bad(res, 429, "Juda ko'p so'rov, bir ozdan so'ng urinib ko'ring");
     if (pend.data && pend.data.length >= 25) return bad(res, 429, "Sartaroshxonada kutilayotgan so'rovlar ko'p, keyinroq urinib ko'ring");
     const open = await db(`queue?barbershop_id=eq.${id}&client_tg_id=eq.${user.id}&status=in.(sorov,kutilmoqda,jarayonda)&select=id`);
     if (open.data && open.data.length >= 2) return bad(res, 429, "Sizda bu sartaroshxonada faol navbat bor");

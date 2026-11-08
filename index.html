@@ -212,7 +212,7 @@ window.ld=(function(){const M=["Soch tarayapmiz...","Ustara charxlanyapti...","Q
       <div class="card"><form class="set" id="sf">
         <b>Login va parolni o'zgartirish</b>
         <input id="nu" placeholder="Yangi login" required>
-        <input id="np" type="password" placeholder="Yangi parol (kamida 6 belgi)" minlength="6" required>
+        <input id="np" type="password" placeholder="Yangi parol (kamida 8 belgi, harf va raqam)" minlength="8" required>
         <button class="gold">Saqlash</button><div class="ok" id="sok"></div></form></div>
     </section>
   </main>
@@ -222,7 +222,7 @@ window.ld=(function(){const M=["Soch tarayapmiz...","Ustara charxlanyapti...","Q
   <b id="dt">Yangi sartaroshxona</b>
   <input class="fi" id="f_token" placeholder="Bot token (BotFather'dan)" required>
   <input class="fi" id="f_login" placeholder="Bot uchun login" required>
-  <input class="fi" id="f_pass" type="password" placeholder="Bot uchun parol (kamida 6 belgi)" minlength="6" autocomplete="new-password" required>
+  <input class="fi" id="f_pass" type="password" placeholder="Bot uchun parol (kamida 8 belgi, harf va raqam)" minlength="8" autocomplete="new-password" required>
   <input class="fi" id="f_barber" placeholder="Sartarosh ism familiyasi" required>
   <input class="fi" id="f_name" placeholder="Sartaroshxona nomi" required>
   <input class="fi" id="f_phone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __" pattern="\+998 \d{2} \d{3} \d{2} \d{2}" title="+998 90 123 45 67" required>
@@ -244,7 +244,7 @@ window.ld=(function(){const M=["Soch tarayapmiz...","Ustara charxlanyapti...","Q
 <dialog id="adlg"><form id="af" autocomplete="off">
   <b id="adt">Yangi agent</b>
   <input class="fi" id="a_login" placeholder="Login" required>
-  <input class="fi" id="a_pass" type="password" placeholder="Parol (kamida 6 belgi)" minlength="6" autocomplete="new-password" required>
+  <input class="fi" id="a_pass" type="password" placeholder="Parol (kamida 8 belgi, harf va raqam)" minlength="8" autocomplete="new-password" required>
   <input class="fi" id="a_code" placeholder="Agent code" required>
   <div class="err" id="a_err"></div>
   <div class="btns"><button class="gold" type="submit">Saqlash</button><button type="button" id="a_cancel">Bekor qilish</button></div>
@@ -331,7 +331,7 @@ function renderShops(){const box=$('#shops');box.innerHTML='';
 function openShop(x){editId=x?x.id:null;$('#f_agent').value='';$('#f_agent').required=ROLE==='agent'&&!x;$('#f_agent').style.display=ROLE==='agent'&&x?'none':'';$('#dt').textContent=x?'Sartaroshxonani tahrirlash':'Yangi sartaroshxona';
   $('#f_token').value='';$('#f_pass').value='';$('#f_token').required=!x;$('#f_pass').required=!x;
   $('#f_token').placeholder=x?"Yangi bot token (o'zgartirmasangiz bo'sh qoldiring)":"Bot token (BotFather'dan)";
-  $('#f_pass').placeholder=x?"Yangi parol (o'zgartirmasangiz bo'sh qoldiring)":'Bot uchun parol (kamida 6 belgi)';
+  $('#f_pass').placeholder=x?"Yangi parol (o'zgartirmasangiz bo'sh qoldiring)":'Bot uchun parol (kamida 8 belgi, harf va raqam)';
   $('#f_login').value=x?x.login||'':'';$('#f_barber').value=x?x.barber_name||'':'';$('#f_name').value=x?x.name||'':'';
   $('#f_phone').value=x?x.phone||'':'';$('#f_addr').value=x?x.address||'':'';
   renderChips();$('#f_ok').textContent=x?'Saqlash':'Yaratish';$('#f_err').textContent='';$('#dlg').showModal()}
@@ -403,7 +403,7 @@ function agentDetail(x){const t0=new Date();t0.setHours(0,0,0,0);
     ...x.sh.map(s=>['💈 '+s.name,(s.sub_until&&new Date(s.sub_until)>=t0?'Faol':'Tugagan')+' · '+fd(s.created_at)]),
     ...x.pp.slice(0,10).map(p=>["💳 "+fd(p.paid_at)+' '+(p.plan||''),money(p.amount)])])}
 function openAgent(a){editAgent=a?a.id:null;$('#adt').textContent=a?'Agentni tahrirlash':'Yangi agent';$('#a_login').value=a?a.login:'';$('#a_code').value=a?a.agent_code:'';
-  $('#a_pass').value='';$('#a_pass').required=!a;$('#a_pass').placeholder=a?"Yangi parol (o'zgartirmasangiz bo'sh qoldiring)":'Parol (kamida 6 belgi)';$('#a_err').textContent='';$('#adlg').showModal()}
+  $('#a_pass').value='';$('#a_pass').required=!a;$('#a_pass').placeholder=a?"Yangi parol (o'zgartirmasangiz bo'sh qoldiring)":'Parol (kamida 8 belgi, harf va raqam)';$('#a_err').textContent='';$('#adlg').showModal()}
 $('#addAgent').onclick=()=>openAgent(null);$('#a_cancel').onclick=()=>$('#adlg').close();
 $('#af').onsubmit=async e=>{e.preventDefault();$('#a_err').textContent='';
   try{await api('agents',{action:editAgent?'update':'create',id:editAgent,login:$('#a_login').value.trim(),password:$('#a_pass').value,code:$('#a_code').value.trim()});$('#adlg').close();loadAgents()}catch(x){$('#a_err').textContent=x.message}};

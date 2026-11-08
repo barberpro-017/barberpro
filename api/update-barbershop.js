@@ -1,4 +1,4 @@
-const { crypto, db, tg, host, who } = require('./_lib');
+const { crypto, db, tg, host, who, strongPw } = require('./_lib');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
   const w = await who(req);
@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     if (!b[k] || !String(b[k]).trim()) return res.status(400).json({ error: "Barcha maydonlarni to'ldiring" });
   const patch = { name: b.name, address: String(b.address).trim().replace(/\s+/g, ' '), phone: b.phone, barber_name: b.barber, login: String(b.login).trim().toLowerCase() };
   if (b.password) {
-    if (String(b.password).length < 6) return res.status(400).json({ error: "Parol kamida 6 belgi bo'lsin" });
+    if (!strongPw(String(b.password))) return res.status(400).json({ error: "Parol kamida 8 belgi, harf va raqamdan iborat bo'lsin" });
     const salt = crypto.randomBytes(16).toString('hex');
     patch.password_hash = salt + ':' + crypto.scryptSync(String(b.password), salt, 64).toString('hex');
   }

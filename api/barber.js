@@ -66,11 +66,13 @@ module.exports = async (req, res) => {
   else { const bt = await botToken(id), user = bt && verifyInit(String(b.initData || ''), bt); okAuth = !!user && user.id === t.u; }
   if (!okAuth) return bad(res, 401, 'Qayta kiring');
   if (b.action === 'shop') {
-    const r = await db('barbershops?id=eq.' + id + '&select=name,barber_name,address,sub_until,is_open');
+    const r = await db('barbershops?id=eq.' + id + '&select=name,barber_name,address,sub_until,is_open,on_break');
     return res.json({ shop: r.data && r.data[0] });
   }
   if (b.action === 'setopen') {
-    await db('barbershops?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ is_open: !!b.value }) });
+    const m = String(b.mode || (b.value ? 'work' : 'closed'));
+    const patch = m === 'work' ? { is_open: true, on_break: false } : m === 'break' ? { is_open: false, on_break: true } : { is_open: false, on_break: false };
+    await db('barbershops?id=eq.' + id, { method: 'PATCH', body: JSON.stringify(patch) });
     return res.json({ ok: true });
   }
   if (b.action === 'products') {

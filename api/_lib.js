@@ -71,4 +71,5 @@ function checkPw(pw, stored) {
   const [salt, h] = String(stored || ':').split(':'), x = crypto.scryptSync(String(pw), salt || 'x', 64);
   return !!h && h.length === x.length * 2 && crypto.timingSafeEqual(x, Buffer.from(h, 'hex'));
 }
-module.exports = { crypto, admin, db, tg, host, sweep, verifyInit, dayStartISO, ADMIN_CODE, eq, mkAgent, who, hashPw, checkPw };
+const strongPw = p => typeof p === 'string' && p.length >= 8 && p.length <= 128 && /[A-Za-z]/.test(p) && /\d/.test(p);
+module.exports = { crypto, admin, db, tg, host, sweep, verifyInit, dayStartISO, ADMIN_CODE, eq, mkAgent, who, hashPw, checkPw, strongPw };

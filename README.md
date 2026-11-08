@@ -46,3 +46,10 @@ GitHub repo'ga fayllarni yuklang, Vercel avtomatik deploy qiladi.
 ## Yangilanish (Magazin+, ko'p xizmat, loading, Android)
 - SQL Editor: `supabase/10_store_plus_apk.sql` ni ishga tushiring.
 - Android: `android/` papkasi va `.github/workflows/android.yml` (APK'ni GitHub Actions yig'adi). Batafsil: `android/README.md`.
+
+## Xavfsizlik
+- `SECURITY.md` ro'yxatini bajaring; SQL: `supabase/11_admin_role_security.sql`; `vercel.json` (xavfsizlik sarlavhalari).
+
+## MWW oyna
+- SQL Editor: `supabase/12_mww.sql` ni ishga tushiring.
+- Sartarosh paneli > Dashboard > "MWW Oyna".

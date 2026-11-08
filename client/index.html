@@ -71,6 +71,7 @@ textarea:focus,input.in:focus{border-color:var(--v)}
 .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;flex:none}
 .sum{margin-top:10px;background:#0d0d20;border:1px solid var(--l);border-radius:12px;padding:10px 12px;color:var(--m);font-size:14px}.sum b{color:var(--g)}
 .chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--l);display:grid;place-items:center;flex:none}.svc.on .chk{background:var(--g);border-color:var(--g);color:#1a1204}.svc.on .chk::after{content:"✓";font-size:14px;font-weight:800}
+.bd.brk{background:#f2c66d22;color:var(--g)}
 </style></head><body>
 <div id="ld" class="on"><div class="ldw"><div class="ldp"><i></i></div></div><div class="lds">✂️</div><div class="ldt" id="ldt"></div><div class="ldb"><i></i></div></div>
 <script>
@@ -147,10 +148,10 @@ function drawRegions(){const m=new Map();shops.forEach(s=>{const r=(s.region||''
 $('#regList').onclick=e=>{const b=e.target.closest('.reg');if(!b)return;region=b.dataset.k;drawShops();go('sShops')};
 const wait=m=>m<=0?"Kutish yo'q":'~'+dur(m);
 function drawShops(){const L=shops.filter(s=>(s.region||'').trim().toLowerCase()===region);$('#rTitle').textContent=L[0]?L[0].region.trim():'';
- $('#shopList').innerHTML=L.map(s=>`<button class="shop ${s.open?'':'cl'}" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><em class="bd ${s.open?'on':'off'}">${s.open?'🟢 Ishlamoqda':'🔴 Yopiq'}</em><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
+ $('#shopList').innerHTML=L.map(s=>`<button class="shop ${s.open?'':'cl'}" data-id="${esc(s.id)}"><div class="sh1"><b>💈 ${esc(s.name)}</b><em class="bd ${s.mode==='work'?'on':s.mode==='break'?'brk':'off'}">${s.mode==='work'?'🟢 Ishlamoqda':s.mode==='break'?'🟡 Tanaffus':'🔴 Yopiq'}</em><span>✂ ${esc(s.barber)}</span><span>📞 ${esc(s.phone)}</span></div><div class="q"><div class="qn">${s.count}<small>navbatda</small></div><div class="qt">⏱ ${wait(s.minutes)}</div></div></button>`).join('')}
 $('#shopList').onclick=async e=>{const b=e.target.closest('.shop');if(!b)return;cur=shops.find(s=>s.id===b.dataset.id);sel.clear();SVC=[];
  $('#dShop').textContent=cur.name;$('#dName').textContent=cur.barber;$('#dPhone').textContent='📞 '+cur.phone;$('#dPhone').href='tel:'+String(cur.phone).replace(/[^+\d]/g,'');
- $('#note').value='';$('#cphone').value='';$('#btime').value=defTime();$('#be').textContent=cur.open?'':"Sartaroshxona hozir yopiq, navbat olib bo'lmaydi";$('#book').disabled=true;$('#svcSum').textContent='Bir yoki bir nechta xizmat tanlang';$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
+ $('#note').value='';$('#cphone').value='';$('#btime').value=defTime();$('#be').textContent=cur.open?'':(cur.mode==='break'?"Sartarosh hozir tanaffusda, birozdan so'ng urinib ko'ring":"Sartaroshxona hozir yopiq, navbat olib bo'lmaydi");$('#book').disabled=true;$('#svcSum').textContent='Bir yoki bir nechta xizmat tanlang';$('#svcList').innerHTML='<div class="mu">Yuklanmoqda...</div>';go('sShop');
  try{const r=await api('shop',{id:cur.id});SVC=r.services;
   $('#svcList').innerHTML=r.services.length?r.services.map(x=>`<button class="svc" data-id="${esc(x.id)}"><span class="chk"></span><span style="flex:1"><b>${esc(x.name)}</b><small>⏱ ${dur(x.duration_min)}</small></span><span class="pr">${money(x.price)}</span></button>`).join(''):'<div class="mu">Sartarosh hali xizmat qo\'shmagan</div>'}
  catch(x){$('#svcList').innerHTML='<div class="err">'+esc(x.message)+'</div>'}};

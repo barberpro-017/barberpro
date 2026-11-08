@@ -1,4 +1,4 @@
-const { crypto, db, tg, host, who, ADMIN_CODE, eq } = require('./_lib');
+const { crypto, db, tg, host, who, ADMIN_CODE, eq, strongPw } = require('./_lib');
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
   const actor = await who(req);
@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   const b = req.body || {};
   for (const k of ['token', 'login', 'password', 'barber', 'name', 'phone', 'address'])
     if (!b[k] || !String(b[k]).trim()) return res.status(400).json({ error: "Barcha maydonlarni to'ldiring" });
-  if (String(b.password).length < 6) return res.status(400).json({ error: "Parol kamida 6 belgi bo'lsin" });
+  if (!strongPw(String(b.password))) return res.status(400).json({ error: "Parol kamida 8 belgi, harf va raqamdan iborat bo'lsin" });
   if (actor.role === 'agent' && !eq(String(b.agentCode || '').trim(), actor.agent.agent_code)) return res.status(400).json({ error: "Agent code noto'g'ri" });
   const ag = actor.role === 'agent' ? { agent_id: actor.agent.id, agent_code: actor.agent.agent_code } : { agent_code: ADMIN_CODE };
   const token = String(b.token).trim();

@@ -1,0 +1,4 @@
+<resources>
+    <!-- true: skrinshot va ekran yozib olish taqiqlanadi. Xatoni skrinshot qilmoqchi bo'lsangiz vaqtincha false qiling -->
+    <bool name="secure_screen">true</bool>
+</resources>

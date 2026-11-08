@@ -74,6 +74,43 @@ details{border-bottom:1px solid var(--l);padding:10px 0}summary{cursor:pointer}d
 .pi{position:relative;cursor:pointer}.nw{position:absolute;top:6px;left:6px;background:var(--g);color:#1a1405;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px}
 .pv img{width:100%;max-height:60vh;object-fit:contain;border-radius:14px;background:#0c0d12;display:block}
 .okc{width:70px;height:70px;border-radius:50%;background:var(--ok);color:#05281d;font-size:38px;font-weight:800;display:grid;place-items:center;margin:0 auto 12px;animation:pop .5s}@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.mwwbtn{display:flex;align-items:center;gap:14px;width:100%;padding:16px;border:0;border-radius:20px;cursor:pointer;color:#1a1405;background:linear-gradient(135deg,#f6d27f,#e0b567 55%,#ffb36b);box-shadow:0 10px 30px #e0b56744;text-align:left}
+.mwwbtn .ic{width:32px;height:32px;stroke-width:1.6}.mwwbtn b{font-size:17px;display:block}.mwwbtn small{opacity:.75}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#1d1f33;border:1px solid var(--g);color:var(--t);padding:12px 18px;border-radius:14px;z-index:99999;box-shadow:0 8px 30px #000a;animation:pop .3s}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{display:grid;gap:2px;text-align:left;background:var(--bg);border:1.5px solid var(--l);border-radius:14px;padding:10px 12px;cursor:pointer;color:var(--t)}
+.chip small{color:var(--m)}.chip.on{border-color:var(--g);background:linear-gradient(135deg,#3a2f14,var(--bg))}
+.sumb{margin-top:10px;background:var(--bg);border:1px solid var(--l);border-radius:12px;padding:10px 12px;color:var(--m);font-size:14px}.sumb b{color:var(--g)}
+.ticket{margin:12px 0;text-align:center;background:linear-gradient(135deg,#2b2750,#3a2d12);border:1px dashed var(--g);border-radius:18px;padding:18px}
+.ticket small{color:var(--m)}.ticket b{display:block;font-size:44px;color:var(--g);letter-spacing:.04em}
+.aqf{display:grid;gap:8px;margin-top:10px}
+#mww{position:fixed;inset:0;z-index:60;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(circle at 12% 0,#2a1f6b66,transparent 45%),radial-gradient(circle at 95% 100%,#5c2a5566,transparent 45%),#080912}
+.mw-top{display:flex;align-items:center;gap:12px}.mw-title{display:flex;align-items:center;gap:10px;flex:1}.mw-title b{font-size:20px;letter-spacing:.06em}.mw-title small{display:block;color:var(--m)}
+.mw-logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),var(--g));color:#17120a}.mw-logo .ic{width:24px;height:24px}
+.mw-grid{flex:1;min-height:0;display:grid;gap:12px;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);grid-template-rows:auto minmax(260px,1fr) auto auto;grid-template-areas:"chair apps" "orders apps" "orders addq" "status clock"}
+.mw-p{background:linear-gradient(145deg,#171a2b,#10121e);border:1px solid #ffffff14;border-radius:22px;padding:16px;min-width:0;min-height:0;box-shadow:0 10px 30px #0006}
+.mw-h{font-weight:700;color:var(--m);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.mw-ch{display:flex;align-items:center;gap:14px}.av{width:60px;height:60px;border-radius:20px;display:grid;place-items:center;font-size:26px;font-weight:800;background:linear-gradient(135deg,var(--a),var(--g));color:#17120a;flex:none}
+.ci{flex:1;min-width:0}.cn{font-size:22px;display:block}.tm{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ok);text-align:right}
+.pbar{height:8px;border-radius:8px;background:#ffffff14;overflow:hidden;margin-top:12px}.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--g));border-radius:8px;transition:width 1s linear}.pbar i.over{background:linear-gradient(90deg,var(--g),var(--bad))}
+.mw-empty{display:grid;gap:10px;justify-items:center;text-align:center;padding:14px;color:var(--m)}
+.mw-orders{display:flex;flex-direction:column;overflow:hidden}.mw-list{overflow:auto;flex:1;display:grid;gap:10px;align-content:start;padding-right:2px}
+.mw-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(70px,.7fr) auto;gap:12px;align-items:center;background:#0b0d17;border:1px solid #ffffff10;border-radius:18px;padding:12px}
+.mw-info b{font-size:16px}.mw-info div{color:var(--m);font-size:13px;margin-top:2px}.mw-time{text-align:center}.mw-time b{font-size:22px;color:var(--g)}.mw-time small{display:block;color:var(--m);font-size:12px}
+.mw-act{display:grid;gap:6px}
+.mb{border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:13px;background:#ffffff12;color:var(--t);white-space:nowrap}
+.mb.ok{background:#38d39f22;color:var(--ok)}.mb.go{background:#f2c66d22;color:#f2c66d}.mb.bad{background:#ff6b6b22;color:var(--bad)}.mb.big{padding:14px 20px;font-size:15px}.mb.dis{opacity:.45;cursor:default}
+.mb.ok:hover{background:var(--ok);color:#05281d}.mb.go:hover{background:#f2c66d;color:#1a1405}.mb.bad:hover{background:var(--bad);color:#2b0606}
+.mw-add{border:0;border-radius:22px;padding:18px;cursor:pointer;color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(135deg,#7c6cff,#c06cff);box-shadow:0 12px 30px #7c6cff55}.mw-add .ic{width:28px;height:28px}
+.mw-status{display:flex;gap:10px;flex-wrap:wrap}.stb{flex:1;min-width:110px;border:2px solid transparent;border-radius:16px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;background:#ffffff0d;color:var(--m)}
+.stb.ok.on{background:var(--ok);color:#05281d;box-shadow:0 6px 22px #38d39f55}.stb.brk.on{background:var(--bad);color:#2b0606;box-shadow:0 6px 22px #ff6b6b55}.stb.cl.on{background:#ffffff26;color:var(--t)}
+.stb.ok{color:var(--ok);border-color:#38d39f44}.stb.brk{color:var(--bad);border-color:#ff6b6b44}
+.mw-clock{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.mw-clk{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}.mw-ki{display:grid;gap:6px}
+.dock{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}.app{border:0;border-radius:22px;padding:22px 10px;cursor:pointer;display:grid;justify-items:center;gap:10px;color:var(--t);font-weight:700;background:#ffffff0d;border:1px solid #ffffff14}
+.app svg{width:58px;height:58px}.app:hover{background:#ffffff1a;transform:translateY(-2px)}
+.mw-ah{display:flex;align-items:center;gap:8px;margin-bottom:8px}.mw-ah b{flex:1}.mw-fr{width:100%;height:calc(100% - 52px);min-height:260px;border:0;border-radius:14px;background:#000}
+.yt-in{display:flex;gap:8px;margin-bottom:8px}.yt-in input{flex:1;min-width:0}
+.mw-apps{display:flex;flex-direction:column}
+@media(max-width:900px){.mw-grid{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"chair" "status" "orders" "addq" "apps" "clock"}.mw-list{max-height:60vh}.mw-fr{height:340px}.mw-row{grid-template-columns:1fr auto}.mw-time{grid-column:1;text-align:left;display:flex;gap:8px;align-items:baseline}.mw-act{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.mw-apps{min-height:300px}}
 </style></head><body>
 <div id="ld"><div class="ldw"><div class="ldp"><i></i></div></div><div class="lds">✂️</div><div class="ldt" id="ldt"></div><div class="ldb"><i></i></div></div>
 <script>
@@ -91,6 +128,17 @@ window.ld=(function(){const M=["Soch tarayapmiz...","Ustara charxlanyapti...","Q
  <aside id="side"><div class="brand">✂ m-barberPro</div><div id="nav"></div></aside>
  <main><header><button class="burger" id="bg" aria-label="Menyu"><i></i><i></i><i></i></button><h2 id="title"></h2><button class="ex" id="out">Chiqish</button></header><div id="view"></div></main>
 </div>
+<div id="mww" class="hide">
+ <div class="mw-top"><div class="mw-title"><span class="mw-logo"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><div><b>MWW</b><small>Main Working Window · <span id="mwShop"></span></small></div></div><button class="mb" data-a="mwclose">✕ Yopish</button></div>
+ <div class="mw-grid">
+  <section class="mw-p" style="grid-area:chair" id="mwChair"></section>
+  <section class="mw-p mw-apps" style="grid-area:apps" id="mwApps"></section>
+  <section class="mw-p mw-orders" style="grid-area:orders"><div class="mw-h">Faol buyurtmalar <span class="tag" id="mwCnt"></span></div><div class="mw-list" id="mwList"></div></section>
+  <button class="mw-add" style="grid-area:addq" data-a="queue"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Navbat qo'shish</button>
+  <section class="mw-p mw-status" style="grid-area:status" id="mwStatus"></section>
+  <section class="mw-p mw-clock" style="grid-area:clock"><div><div id="mwClock" class="mw-clk">00:00:00</div><div id="mwDate" class="mu"></div></div><div class="mw-ki"><button class="mb ok" data-a="tx|kirim">＋ Kirim</button><button class="mb bad" data-a="tx|chiqim">− Chiqim</button></div></section>
+ </div>
+</div>
 <dialog id="dlg"><form id="df"></form></dialog>
 <dialog id="xdlg"><div id="xbody"></div><div class="btns" style="margin-top:14px"><button class="b" id="xc">Yopish</button></div></dialog>
 <script>
@@ -102,12 +150,12 @@ const money=n=>Number(n||0).toLocaleString('ru-RU')+" so'm";
 const day=d=>new Date(d).toDateString(),today=d=>day(d)===day(new Date());
 const hm=d=>new Date(d).toLocaleTimeString('uz',{hour:'2-digit',minute:'2-digit'});
 ls.d('bt');let token=null,shop={},D={services:[],queue:[],transactions:[]},page='dash';
-const I={dash:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',queue:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',services:'<svg class="ic" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>',store:'<svg class="ic" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',stats:'<svg class="ic" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M8 17V9M13 17V5M18 17v-6"/></svg>',cash:'<svg class="ic" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><circle cx="17" cy="14" r="1"/></svg>',sub:'<svg class="ic" viewBox="0 0 24 24"><path d="m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9z"/></svg>',help:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 17.5h.01"/></svg>'};
+const I={pos:'<svg class="ic" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',dash:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',queue:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',services:'<svg class="ic" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>',store:'<svg class="ic" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',stats:'<svg class="ic" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M8 17V9M13 17V5M18 17v-6"/></svg>',cash:'<svg class="ic" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><circle cx="17" cy="14" r="1"/></svg>',sub:'<svg class="ic" viewBox="0 0 24 24"><path d="m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9z"/></svg>',help:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 17.5h.01"/></svg>'};
 const PAGES=[['dash',I.dash,'Dashboard'],['queue',I.queue,'Navbatlar'],['services',I.services,'Xizmatlar'],['stats',I.stats,'Analitika'],['cash',I.cash,'Kirim va Chiqim'],['store',I.store,'Magazin'],['sub',I.sub,'Obuna'],['help',I.help,'Yordam']];
 async function call(action,o={}){const r=await fetch('/api/barber',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,token,shop:SHOP,initData:tg?tg.initData:'',...(APP?{app:'apk',device:DEV}:{}),...o})});
  const j=await r.json().catch(()=>({}));if(r.status===401&&action!=='login'){out();throw new Error('Qayta kiring')}if(!r.ok)throw new Error(j.error||'Xatolik');return j}
 async function load(){const [s,a,b,c]=await Promise.all([call('shop'),...['services','queue','transactions'].map(t=>call('list',{table:t}))]);
- shop=s.shop||{};D.services=a.rows;D.queue=b.rows;D.transactions=c.rows;draw()}
+ shop=s.shop||{};D.services=a.rows;D.queue=b.rows;D.transactions=c.rows;draw();if(mwwOpen)drawMww()}
 function show(on){$('#login').classList.toggle('hide',on);$('#app').classList.toggle('hide',!on)}
 function out(){token=null;ls.d('bt');show(false)}
 async function start(){ld.show();show(true);try{await load()}catch(e){}ld.hide()}
@@ -130,6 +178,25 @@ function openForm(title,fields,cb){const f=$('#df');
  $('#dlg').showModal()}
 const add=(table,row)=>call('add',{table,row});
 const A={
+ mww(){openMww()},
+ mwclose(){mwwOpen=false;$('#mww').classList.add('hide')},
+ async mwacc(id){await A.st(id,'kutilmoqda');toast('Qabul qilindi ✓')},
+ async mwturn(id){if(D.queue.some(q=>q.status==='jarayonda'&&q.id!==id))return toast('Stul band: avval stuldagi mijozni yakunlang');await A.st(id,'jarayonda')},
+ async mwcan(id){if(confirm('Navbat bekor qilinsinmi?'))await A.st(id,'bekor')},
+ async callnext(){const w=D.queue.filter(q=>q.status==='kutilmoqda'&&today(q.at)).sort((a,b)=>new Date(a.rank_at||a.at)-new Date(b.rank_at||b.at))[0];if(w)await A.mwturn(w.id)},
+ async mode(m){await call('setopen',{mode:m});shop.is_open=m==='work';shop.on_break=m==='break';draw();if(mwwOpen)drawMww()},
+ app(x){mwApp=x||null;drawApps()},
+ ytgo(){ls.s('mww_yt',ytLink);drawApps()},
+ ext(){const y=ytEmbed(ytLink);openExt(mwApp==='yt'?(y?y.web:'https://www.youtube.com'):'https://web.telegram.org/k/')},
+ aqm(x){aqMode=x;renderAddQ()},
+ aqs(id){aqSel.has(id)?aqSel.delete(id):aqSel.add(id);renderAddQ()},
+ async aqsave(){const L=D.services.filter(s=>aqSel.has(s.id)),err=m=>{$('#aq_err').textContent=m};
+  if(!L.length)return err('Kamida bitta xizmatni tanlang');
+  let name,phone=null,at=new Date();
+  if(aqMode==='n'){name=aqName.trim();if(name.length<2)return err('Mijoz ismini kiriting');if(!aqTime)return err('Vaqtni belgilang');const [h,m]=aqTime.split(':');at.setHours(+h,+m,0,0);phone=aqPhone.trim().length>5?aqPhone.trim():null}
+  else name='№ '+nextTicket();
+  await add('queue',{client_name:name,phone,service_name:L.map(s=>s.name).join(' + '),price:L.reduce((a,s)=>a+Number(s.price),0),duration_min:L.reduce((a,s)=>a+(s.duration_min||30),0),at:at.toISOString(),status:'kutilmoqda',source:'barber'});
+  $('#xdlg').close();await load();toast(name+" navbati qo'shildi ✓")},
  per(x){per=+x;draw()},
  tab(x){stTab=x;draw();if(x==='o')loadStore()},
  async stref(){await loadStore()},
@@ -148,28 +215,27 @@ const A={
  cat(x){stCat=x;draw()},
  reorder(id){const o=ORD.find(x=>x.id===id);if(!o)return;let n=0;o.items.forEach(i=>{if(PROD.find(p=>p.id===i.id)){cart[i.id]=Math.min((cart[i.id]||0)+i.qty,99);n++}});if(!n)return alert('Bu mahsulotlar endi mavjud emas');stTab='p';draw();showCart()},
  async ocancel(id){if(!confirm('Buyurtma bekor qilinsinmi?'))return;await call('ocancel',{order:id});await loadStore()},
- async open(v){await call('setopen',{value:v==='1'});shop.is_open=v==='1';draw()},
+ async open(v){return A.mode(v==='1'?'work':'closed')},
  async refresh(){await load()},
  wd(k){const w=WDG[k];if(!w)return;if(xchart){xchart.destroy();xchart=null}
   $('#xbody').innerHTML=`<b style="font-size:18px">${esc(w.t)}</b>${w.cfg?'<div class="cw big"><canvas id="xcv"></canvas></div>':''}<div style="margin-top:8px">${w.rows.map(r=>`<div class="row"><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('')}</div>`;
   $('#xdlg').showModal();if(w.cfg&&window.Chart)xchart=mkChart($('#xcv'),w.cfg,true)},
  pay(){$('#xbody').innerHTML=`<b style="font-size:18px">💳 Onlayn to'lov</b><div class="card" style="text-align:center;margin-top:12px"><small class="mu">Karta raqami</small><div class="cn">9860 1901 0950 2756</div><div class="mu">R.A</div></div><div class="btns" style="margin-top:12px"><button class="b g" data-a="copy|9860190109502756">📋 Nusxalash</button></div><div class="mu" style="margin-top:12px">To'lovdan so'ng admin bilan bog'laning (Yordam bo'limi), obunangiz uzaytiriladi.</div>`;$('#xdlg').showModal()},
  async copy(t){try{await navigator.clipboard.writeText(t);alert('Nusxalandi ✓')}catch(e){alert(t)}},
- queue(){if(!D.services.length)return alert("Avval 'Xizmatlar' bo'limida xizmat qo'shing");
-  openForm('Yangi navbat',[{k:'client_name',l:'Mijoz ismi'},{k:'phone',l:'Telefon',t:'tel',r:false},{k:'service',l:'Xizmat',opts:D.services.map(s=>s.name)},{k:'time',l:'Vaqt',t:'time'}],v=>{
-   const s=D.services.find(x=>x.name===v.service),d=new Date(),[h,m]=v.time.split(':');d.setHours(+h,+m,0,0);
-   return add('queue',{client_name:v.client_name,phone:v.phone,service_name:s.name,price:s.price,duration_min:s.duration_min,at:d.toISOString(),status:'kutilmoqda',source:'barber'})})},
+ queue(){aqSel=new Set();aqName='';aqPhone='';aqTime=nowHM();aqMode='n';if(!D.services.length)return alert("Avval 'Xizmatlar' bo'limida xizmat qo'shing");renderAddQ();if(!$('#xdlg').open)$('#xdlg').showModal()},
  service(id){const s=id?D.services.find(x=>x.id===id):null;
   openForm(s?'Xizmatni tahrirlash':'Yangi xizmat',[{k:'name',l:'Xizmat nomi',p:'Masalan: Soch olish',v:s&&s.name},{k:'price',l:"Narxi (so'm)",t:'number',p:'50000',v:s&&s.price},{k:'duration_min',l:'Bajarilish vaqti',opts:DUR,v:s?s.duration_min:30}],
    v=>{const row={name:v.name.trim(),price:+v.price,duration_min:+v.duration_min};return s?call('update',{table:'services',id:s.id,row}):add('services',row)})},
  tx(type){openForm(type==='kirim'?'Yangi kirim':'Yangi chiqim',[{k:'amount',l:"Summa (so'm)",t:'number'},{k:'note',l:'Izoh',r:false}],v=>add('transactions',{type,amount:+v.amount,note:v.note}))},
- async st(id,st){const q=D.queue.find(x=>x.id===id);await call('update',{table:'queue',id,row:{status:st}});
+ async st(id,st){const q=D.queue.find(x=>x.id===id);await call('update',{table:'queue',id,row:{status:st,...(st==='jarayonda'?{started_at:new Date().toISOString()}:{})}});
   if(st==='tugadi'&&q)await add('transactions',{type:'kirim',amount:q.price,note:'Navbat: '+q.client_name});await load()},
  async del(table,id){if(confirm("O'chirilsinmi?")){await call('delete',{table,id});await load()}}
 };
 $('#xc').onclick=()=>$('#xdlg').close();
 $('#xdlg').addEventListener('close',()=>{if(xchart){xchart.destroy();xchart=null}});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-tg]');if(a){e.preventDefault();if(tg&&tg.openTelegramLink)tg.openTelegramLink(a.href);else window.open(a.href,'_blank')}});
+setInterval(tickMww,1000);
+setInterval(()=>{if(token&&mwwOpen&&!document.hidden&&!document.querySelector('dialog[open]'))load().catch(()=>{})},20000);
 setInterval(()=>{if(token&&page==='store'&&stTab==='o'&&!document.hidden&&!document.querySelector('dialog[open]'))loadStore().catch(()=>{})},60000);
 setInterval(()=>{if(token&&page==='queue'&&!document.hidden&&!document.querySelector('dialog[open]'))load().catch(()=>{})},60000);
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const [a,x,y]=b.dataset.a.split('|');try{await A[a](x,y)}catch(err){alert(err.message)}});
@@ -177,8 +243,9 @@ const sum=(t,f)=>D.transactions.filter(x=>x.type===t&&f(x.created_at)).reduce((s
 const W=(l,v,c='')=>`<div class="card w"><small>${l}</small><div class="v ${c}">${v}</div></div>`;
 const V={
  dash(){const tq=D.queue.filter(q=>today(q.at)),wait=tq.filter(q=>q.status==='kutilmoqda').sort((a,b)=>new Date(a.rank_at||a.at)-new Date(b.rank_at||b.at)),inc=sum('kirim',today),ex=sum('chiqim',today);
-  return `<div class="grid">${W('Navbatdagilar',wait.length)}${W('Bugun tugatilgan',tq.filter(q=>q.status==='tugadi').length)}${W('Kunlik tushum',money(inc),'ok')}${W('Kunlik chiqim',money(ex),'bad')}${W('Sof foyda',money(inc-ex),'gd')}${W("Yangi so'rovlar",D.queue.filter(q=>q.status==='sorov').length,'gd')}${W('Xizmatlar soni',D.services.length)}</div>
-  <div class="oc"><button class="ob ${shop.is_open?'on':''}" data-a="open|1">🟢 ISHLAMOQDA</button><button class="ob off ${shop.is_open?'':'on'}" data-a="open|0">🔴 YOPIQ</button></div>
+  return `<button class="mwwbtn" data-a="mww">${I.pos}<div><b>MWW Oyna</b><small>Main Working Window · asosiy ish oynasi</small></div></button>
+  <div class="grid">${W('Navbatdagilar',wait.length)}${W('Bugun tugatilgan',tq.filter(q=>q.status==='tugadi').length)}${W('Kunlik tushum',money(inc),'ok')}${W('Kunlik chiqim',money(ex),'bad')}${W('Sof foyda',money(inc-ex),'gd')}${W("Yangi so'rovlar",D.queue.filter(q=>q.status==='sorov').length,'gd')}${W('Xizmatlar soni',D.services.length)}</div>
+  <div class="oc"><button class="ob ${shop.is_open?'on':''}" data-a="open|1">🟢 ISHLAMOQDA</button><button class="ob off ${shop.is_open?'':'on'}" data-a="open|0">🔴 YOPIQ</button></div>${shop.on_break?'<div class="mu" style="text-align:center">☕ Hozir tanaffusda</div>':''}
   <div class="card"><small class="mu">Keyingi mijoz</small><div style="margin-top:6px;font-size:18px">${wait[0]?`<b>${esc(wait[0].client_name)}</b> · ${hm(wait[0].at)} · ${esc(wait[0].service_name)}`:"Hozircha navbat yo'q"}</div></div>
   <div class="card"><b>Tezkor amallar</b><div class="btns" style="margin-top:10px"><button class="b g" data-a="queue">➕ Navbat</button><button class="b" data-a="tx|kirim">💵 Kirim</button><button class="b" data-a="tx|chiqim">🧾 Chiqim</button><button class="b" data-a="service">✂️ Xizmat</button></div></div>`},
  queue(){const key=q=>new Date(q.rank_at||q.at),R=D.queue.filter(q=>q.status==='sorov').sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)),
@@ -280,8 +347,51 @@ function showCart(){const L=PROD.filter(p=>cart[p.id]);if(!L.length){$('#xdlg').
  <div class="row"><b>Jami</b><b class="gd">${money(tot)}</b></div><textarea class="fi" id="cnote" rows="2" maxlength="300" placeholder="Izoh (ixtiyoriy)" style="margin-top:10px;resize:none">${esc(cnote)}</textarea>
  <div class="btns" style="margin-top:10px"><button class="b g" data-a="order">✅ Buyurtma berish</button><button class="b" data-a="cclear">Tozalash</button></div>`;
  if(!$('#xdlg').open)$('#xdlg').showModal()}
-document.addEventListener('input',e=>{if(e.target.id==='cnote')cnote=e.target.value;if(e.target.id==='stq'){stQ=e.target.value;$('#pgrid').innerHTML=prodGrid()}});
+document.addEventListener('input',e=>{const id=e.target.id;if(id==='aq_name')aqName=e.target.value;if(id==='aq_phone'){e.target.value=maskPh(e.target.value);aqPhone=e.target.value}if(id==='aq_time')aqTime=e.target.value;if(id==='yt_link')ytLink=e.target.value;if(e.target.id==='cnote')cnote=e.target.value;if(e.target.id==='stq'){stQ=e.target.value;$('#pgrid').innerHTML=prodGrid()}});
 document.addEventListener('change',e=>{if(e.target.id==='sts'){stSort=e.target.value;$('#pgrid').innerHTML=prodGrid()}});
+/* ===== MWW (Main Working Window) ===== */
+let mwwOpen=false,mwApp=null,ytLink=ls.g('mww_yt')||'',aqMode='n',aqSel=new Set(),aqName='',aqPhone='',aqTime='';
+const WDF=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'],MONF=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+const p2=n=>String(n).padStart(2,'0');
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function maskPh(v){let d=v.replace(/\D/g,'');if(v.trim().startsWith('+998')||v.trim().startsWith('998'))d=d.slice(3);d=d.slice(0,9);const q=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);return q.length?'+998 '+q.join(' '):'+998 '}
+function nextTicket(){let m=0;D.queue.forEach(q=>{const t=/^№ (\d+)/.exec(q.client_name||'');if(t&&today(q.created_at))m=Math.max(m,+t[1])});return m+1}
+function nowHM(){const d=new Date(Date.now()+10*60000);return p2(d.getHours())+':'+p2(d.getMinutes())}
+function openExt(u){if(window.AndroidApp&&AndroidApp.open)AndroidApp.open(u);else if(tg&&tg.openLink)tg.openLink(u);else window.open(u,'_blank','noopener')}
+function ytEmbed(u){const m=String(u).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/),l=String(u).match(/[?&]list=([A-Za-z0-9_-]+)/);
+ if(m)return {src:'https://www.youtube-nocookie.com/embed/'+m[1]+(l?'?list='+l[1]:''),web:'https://www.youtube.com/watch?v='+m[1]};
+ if(l)return {src:'https://www.youtube-nocookie.com/embed/videoseries?list='+l[1],web:'https://www.youtube.com/playlist?list='+l[1]};return null}
+function openMww(){mwwOpen=true;$('#mww').classList.remove('hide');drawMww();drawApps();tickMww()}
+function drawMww(){
+ $('#mwShop').textContent=shop.name||'';
+ const key=q=>new Date(q.rank_at||q.at).getTime();
+ const chair=D.queue.filter(q=>q.status==='jarayonda').sort((a,b)=>new Date(a.started_at||a.at)-new Date(b.started_at||b.at))[0];
+ const wait=D.queue.filter(q=>q.status==='kutilmoqda'&&today(q.at)).sort((a,b)=>key(a)-key(b));
+ const rows=D.queue.filter(q=>q.status==='sorov'||(q.status==='kutilmoqda'&&today(q.at))).sort((a,b)=>key(a)-key(b));
+ if(chair){const dur=chair.duration_min||30,ini=String(chair.client_name||'?').trim().charAt(0).toUpperCase();
+  $('#mwChair').innerHTML=`<div class="mw-h">💺 Stuldagi mijoz</div><div class="mw-ch"><div class="av">${esc(ini)}</div><div class="ci"><b class="cn">${esc(chair.client_name)}</b><div class="mu">${chair.phone?'📞 '+esc(chair.phone)+' · ':''}${esc(chair.service_name)} · ${money(chair.price)}</div>${chair.note?`<div class="mu">💬 ${esc(chair.note)}</div>`:''}</div><div><div class="tm" id="mwTimer" data-t="${esc(chair.started_at||chair.at)}" data-d="${dur}">00:00</div><div class="mu" style="text-align:right">rejada ${durTxt(dur)}</div></div></div><div class="pbar"><i id="mwProg"></i></div><div class="btns" style="margin-top:12px"><button class="mb ok big" data-a="st|${chair.id}|tugadi">✅ Yakunlash</button><button class="mb bad" data-a="st|${chair.id}|bekor">✖ Bekor qilish</button></div>`}
+ else $('#mwChair').innerHTML=`<div class="mw-h">💺 Stuldagi mijoz</div><div class="mw-empty"><div style="font-size:34px">💺</div><b style="color:var(--t);font-size:18px">Stul bo'sh</b>${wait[0]?`<button class="mb go big" data-a="callnext">📣 Keyingisini chaqirish: ${esc(wait[0].client_name)}</button>`:'<div>Navbatda mijoz yo\'q</div>'}</div>`;
+ $('#mwCnt').textContent=rows.length;
+ $('#mwList').innerHTML=rows.length?rows.map(q=>{const m=Math.round((new Date(q.at)-Date.now())/60000),isReq=q.status==='sorov';
+  return `<div class="mw-row"><div class="mw-info"><b>${esc(q.client_name)}</b><div>${q.phone?'📞 '+esc(q.phone):'📞 —'}</div>${q.note?`<div>💬 ${esc(q.note)}</div>`:''}<div>✂ ${esc(q.service_name)} · ${money(q.price)}</div></div>
+  <div class="mw-time"><b>${hm(q.at)}</b><small>${m>0?leftTxt(m)+'dan so\'ng':'vaqti keldi'}</small></div>
+  <div class="mw-act">${isReq?`<button class="mb ok" data-a="mwacc|${q.id}">Qabul qilish</button>`:'<button class="mb ok dis">✔ Qabul qilingan</button>'}<button class="mb go" data-a="mwturn|${q.id}">Navbatni berish</button><button class="mb bad" data-a="mwcan|${q.id}">Bekor qilish</button></div></div>`}).join(''):'<div class="mw-empty"><div style="font-size:30px">🗒️</div>Hozircha so\'rovlar yo\'q</div>';
+ $('#mwStatus').innerHTML=`<button class="stb ok ${shop.is_open?'on':''}" data-a="mode|work">🟢 Ishlamoqda</button><button class="stb brk ${shop.on_break?'on':''}" data-a="mode|break">☕ Tanaffus</button><button class="stb cl ${!shop.is_open&&!shop.on_break?'on':''}" data-a="mode|closed">Yopiq</button>`}
+function drawApps(){const el=$('#mwApps');
+ if(!mwApp){el.innerHTML=`<div class="mw-h">Ilovalar</div><div class="dock"><button class="app" data-a="app|yt"><svg viewBox="0 0 48 48"><rect x="3" y="9" width="42" height="30" rx="10" fill="#ff2d4d"/><path d="M20 17l12 7-12 7z" fill="#fff"/></svg><span>YouTube</span></button><button class="app" data-a="app|tg"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#2a9df0"/><path d="M12 23.5l23-9-4 19-7-5-4 4v-6.5l13-11-17 9.5z" fill="#fff"/></svg><span>Telegram Web</span></button></div><div class="mu" style="text-align:center">Ilovani bossangiz shu oynaning ichida ochiladi</div>`;return}
+ const head=`<div class="mw-ah"><button class="mb" data-a="app|">← Ilovalar</button><b>${mwApp==='yt'?'YouTube':'Telegram Web'}</b><button class="mb" data-a="ext" title="Tashqarida ochish">↗</button></div>`;
+ const FR=' allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-modals"';
+ if(mwApp==='yt'){const y=ytEmbed(ytLink);el.innerHTML=head+`<div class="yt-in"><input class="fi" id="yt_link" placeholder="YouTube havolasi (video yoki pleylist)" value="${esc(ytLink)}"><button class="mb go" data-a="ytgo">▶</button></div>`+(y?`<iframe class="mw-fr" src="${y.src}"${FR}></iframe>`:`<div class="mw-empty"><div style="font-size:34px">▶️</div>Video yoki pleylist havolasini qo'ying<div style="font-size:12px">YouTube saytining o'zi bu oynada ochilmaydi, havola bo'yicha pleyer ochiladi</div></div>`)}
+ else el.innerHTML=head+`<iframe class="mw-fr" src="https://web.telegram.org/k/"${FR}></iframe><div class="mu" style="font-size:12px;margin-top:6px">Oyna bo'sh qolsa, Telegram Web ichki oynada ochilishga ruxsat bermaydi: ↗ tugmasi bilan tashqarida oching.</div>`}
+function tickMww(){if(!mwwOpen)return;const n=new Date();$('#mwClock').textContent=p2(n.getHours())+':'+p2(n.getMinutes())+':'+p2(n.getSeconds());
+ $('#mwDate').textContent=WDF[n.getDay()]+', '+n.getDate()+' '+MONF[n.getMonth()]+' '+n.getFullYear();
+ const t=document.getElementById('mwTimer');if(t){const sec=Math.max(0,Math.floor((Date.now()-new Date(t.dataset.t))/1000)),d=(+t.dataset.d||30)*60;t.textContent=p2(Math.floor(sec/60))+':'+p2(sec%60);const pr=document.getElementById('mwProg');if(pr){pr.style.width=Math.min(100,sec/d*100)+'%';pr.className=sec>d?'over':''}}}
+function renderAddQ(){const L=D.services.filter(s=>aqSel.has(s.id)),pr=L.reduce((a,s)=>a+Number(s.price),0),du=L.reduce((a,s)=>a+(s.duration_min||30),0);
+ $('#xbody').innerHTML=`<b style="font-size:18px">➕ Yangi navbat</b>
+ ${aqMode==='n'?`<div class="aqf"><input class="fi" id="aq_name" placeholder="Mijoz ismi familiyasi" value="${esc(aqName)}"><input class="fi" id="aq_phone" type="tel" inputmode="numeric" placeholder="+998 __ ___ __ __" value="${esc(aqPhone)}"><label class="lb">Keladigan vaqti</label><input class="fi" id="aq_time" type="time" value="${esc(aqTime)}"></div>`:`<div class="ticket"><small>Navbat raqami</small><b>№ ${nextTicket()}</b><div class="mu">Ism va telefon so'ralmaydi</div></div>`}
+ <label class="lb" style="margin-top:12px">Xizmat qo'shish</label><div class="chips">${D.services.map(s=>`<button class="chip ${aqSel.has(s.id)?'on':''}" data-a="aqs|${s.id}"><b>${esc(s.name)}</b><small>${money(s.price)} · ${durTxt(s.duration_min)}</small></button>`).join('')}</div>
+ <div class="sumb">${L.length?`<b>${L.length} ta xizmat</b> · ${money(pr)} · ⏱ ${durTxt(du)}`:'Kamida bitta xizmat tanlang'}</div><div class="err" id="aq_err"></div>
+ <div class="btns" style="margin-top:12px"><button class="b g" data-a="aqsave">✅ Saqlash</button>${aqMode==='n'?'<button class="b" data-a="aqm|d">🔢 Raqamli qo\'shish</button>':'<button class="b" data-a="aqm|n">← Ism bilan</button>'}<button class="b" data-a="closex">Bekor</button></div>`}
 function draw(){document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===page));
  $('#title').textContent=(shop.name?shop.name+' · ':'')+PAGES.find(p=>p[0]===page)[2];$('#view').innerHTML=V[page]();if(page==='stats')setTimeout(drawCharts,0)}
 </script></body></html>
